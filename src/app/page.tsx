@@ -1,92 +1,91 @@
-// app/page.tsx
+"use client";
+
+import { useRef } from "react";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+
 export default function HomePage() {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const discordRef = useRef<HTMLDivElement>(null);
+
+  const scrollToContent = () => {
+    contentRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const scrollToDiscord = () => {
+    discordRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <div className="min-h-screen">
-      {/* Navigation */}
-      <nav className="flex items-center justify-between px-6 py-4">
-        <div className="text-xl font-bold">거북이 놀이터</div>
+    <div className="flex flex-col min-h-screen">
+      <Header />
 
-        <div className="flex space-x-8">
-          <a href="/shop" className="hover:text-gray-600">
-            상점
-          </a>
-          <a href="/community" className="hover:text-gray-600">
-            커뮤니티
-          </a>
-          <a href="/shop" className="hover:text-gray-600">
-            채팅
-          </a>
-          <a href="/support" className="hover:text-gray-600">
-            후원패스
-          </a>
-        </div>
-
-        <div className="flex space-x-4">
-          <button className="px-4 py-2 rounded hover:bg-gray-100">
-            로그인
-          </button>
-          <button className="px-4 py-2 text-white bg-gray-800 rounded hover:bg-gray-700">
-            회원가입
-          </button>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <div className="py-20 text-center">
-        <h1 className="mb-4 text-5xl font-bold">
-          Sustainable Living,
-          <br />
-          Personalized
-        </h1>
-        <p className="mb-8 text-xl text-gray-600">Subtitle</p>
-        <div className="space-x-4">
-          <button className="px-6 py-3 text-white bg-black rounded hover:bg-gray-800">
-            Shop Now
-          </button>
-          <button className="px-6 py-3 border border-black rounded hover:bg-gray-50">
-            Learn More
-          </button>
-        </div>
-      </div>
-
-      {/* Grid Section */}
-      <div className="container px-6 py-12 mx-auto">
-        <div className="grid grid-cols-2 gap-8">
-          {/* Area 1 */}
-          <div className="flex items-center justify-center text-2xl bg-gray-200 aspect-square">
-            구역 1
+      <main className="flex-grow">
+        {/* Banner Section */}
+        <section className="relative w-full h-[651px] bg-gray-100">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <h1 className="text-4xl font-bold">배너</h1>
           </div>
-
-          {/* Area 2 */}
-          <div className="flex items-center justify-center text-2xl bg-gray-200 aspect-square">
-            구역 2
+          <div className="absolute flex space-x-4 transform -translate-x-1/2 bottom-8 left-1/2">
+            <button
+              onClick={scrollToContent}
+              className="px-6 py-2 transition-colors bg-white rounded-full shadow-md hover:bg-gray-50"
+            >
+              게임 컨텐츠 살펴보기
+            </button>
+            <button
+              onClick={scrollToDiscord}
+              className="px-6 py-2 transition-colors bg-white rounded-full shadow-md hover:bg-gray-50"
+            >
+              서버에 참여하기
+            </button>
           </div>
+        </section>
 
-          {/* Area 3 */}
-          <div className="flex items-center justify-center text-2xl bg-gray-200 aspect-square">
-            구역 3
+        {/* Grid Section */}
+        <section
+          ref={contentRef}
+          className="container px-6 py-12 mx-auto scroll-mt-20"
+        >
+          <div className="grid grid-cols-2 gap-8">
+            <div className="p-4 bg-gray-100 aspect-video">
+              <h3 className="text-lg font-bold">컨텐츠 소개 - 도전과제</h3>
+            </div>
+            <div className="p-4 bg-gray-100 aspect-video">
+              <h3 className="text-lg font-bold">컨텐츠 소개 - 던전</h3>
+            </div>
+            <div className="p-4 bg-gray-100 aspect-video">
+              <h3 className="text-lg font-bold">컨텐츠 소개 - 퀘스트</h3>
+            </div>
+            <div className="p-4 bg-gray-200 aspect-video">
+              <h3 className="text-lg font-bold">컨텐츠 소개 - 퀘스트</h3>
+            </div>
           </div>
+        </section>
 
-          {/* Area 4 */}
-          <div className="flex items-center justify-center text-2xl bg-gray-200 aspect-square">
-            구역 4
-          </div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <footer className="py-8 mt-12 text-white bg-gray-800">
-        <div className="container px-6 mx-auto">
-          <div className="text-sm">
-            <p>번호: | 511-3389 |</p>
-            <p>
-              개발자: 호치 | 경남남도 창원시 마산회원구 충호로 27 | 연락:
-              010-6209-6155 | 디스코드 ID : hochi__0905
+        {/* Discord Section */}
+        <section
+          ref={discordRef}
+          className="py-12 text-center bg-white scroll-mt-20"
+        >
+          <div className="max-w-2xl px-6 mx-auto">
+            <p className="mb-4">
+              거북이 놀이터 서비스는 일부 공개되어 운영됩니다!
             </p>
-            <p>Email: 2000biglight@naver.com</p>
+            <p className="mb-8">
+              공식 디스코드 서버에 참가하여 게임을 즐겨보세요!
+            </p>
+            <img
+              src="/assets/discord-logo.png"
+              alt="Discord"
+              className="mx-auto cursor-pointer hover:opacity-90"
+              onClick={() => window.open("https://discord.gg/2Ah2ktBp")}
+            />
           </div>
-        </div>
-      </footer>
+        </section>
+      </main>
+
+      <Footer />
     </div>
   );
 }

@@ -1,4 +1,3 @@
-// components/layout/MenuNavigation.tsx
 "use client";
 
 import Link from "next/link";
@@ -11,7 +10,7 @@ export default function MenuNavigation({ currentMenu }: MenuNavigationProps) {
   const menus = [
     { name: "기본 정보", path: "/my/basic" },
     { name: "강화 정보", path: "/my/enhancement" },
-    { name: "커뮤니티 활동", path: "/my/community" },
+    { name: "커뮤니티 활동", path: "/my/posts" },
     { name: "출석체크", path: "/my/attendance" },
   ];
 
@@ -21,7 +20,11 @@ export default function MenuNavigation({ currentMenu }: MenuNavigationProps) {
         <Link
           key={menu.name}
           href={menu.path}
-          className={`text-lg ${currentMenu === menu.name ? "font-bold" : ""}`}
+          className={`text-lg ${
+            currentMenu === menu.name
+              ? "font-bold text-black"
+              : "text-gray-500 hover:text-gray-800"
+          }`}
         >
           {menu.name}
         </Link>

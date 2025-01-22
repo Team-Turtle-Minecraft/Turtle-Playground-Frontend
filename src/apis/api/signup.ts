@@ -1,13 +1,5 @@
 // apis/api/signup.ts
-import { SignupData } from "@/types/auth";
-
-interface SignupResponse {
-  message: string;
-  token: {
-    accessToken: string;
-    refreshToken: string;
-  };
-}
+import { SignupData, SignupResponse } from "@/types/auth";
 
 export const signup = async (
   signupData: SignupData

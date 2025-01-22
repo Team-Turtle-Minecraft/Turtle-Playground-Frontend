@@ -1,13 +1,5 @@
 // apis/api/login.ts
-import type { SnsType } from "@/types/auth";
-
-interface LoginResponse {
-  message: string;
-  token: {
-    accessToken: string;
-    refreshToken: string;
-  };
-}
+import type { LoginResponse, SnsType } from "@/types/auth";
 
 export const login = async (
   snsType: SnsType,

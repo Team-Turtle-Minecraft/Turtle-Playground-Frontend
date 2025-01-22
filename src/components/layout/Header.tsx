@@ -108,7 +108,7 @@ export default function Header() {
           <a href="/ranking" className="text-[22px]">
             랭킹
           </a>
-          <a href="/cash-check" className="text-[22px]">
+          <a href="/my/attendance" className="text-[22px]">
             출석체크
           </a>
         </div>

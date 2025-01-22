@@ -10,3 +10,19 @@ export interface SignupData {
   accessToken: string;
   nickname: string;
 }
+
+export interface SignupResponse {
+  message: string;
+  token: {
+    accessToken: string;
+    refreshToken: string;
+  };
+}
+
+export interface LoginResponse {
+  message: string;
+  token: {
+    accessToken: string;
+    refreshToken: string;
+  };
+}

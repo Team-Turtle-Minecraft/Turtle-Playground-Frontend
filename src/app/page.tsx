@@ -1,101 +1,91 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useRef } from "react";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+
+export default function HomePage() {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const discordRef = useRef<HTMLDivElement>(null);
+
+  const scrollToContent = () => {
+    contentRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const scrollToDiscord = () => {
+    discordRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="flex flex-col min-h-screen">
+      <Header />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+      <main className="flex-grow">
+        {/* Banner Section */}
+        <section className="relative w-full h-[651px] bg-gray-100">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <h1 className="text-4xl font-bold">배너</h1>
+          </div>
+          <div className="absolute flex space-x-4 transform -translate-x-1/2 bottom-8 left-1/2">
+            <button
+              onClick={scrollToContent}
+              className="px-6 py-2 transition-colors bg-white rounded-full shadow-md hover:bg-gray-50"
+            >
+              게임 컨텐츠 살펴보기
+            </button>
+            <button
+              onClick={scrollToDiscord}
+              className="px-6 py-2 transition-colors bg-white rounded-full shadow-md hover:bg-gray-50"
+            >
+              서버에 참여하기
+            </button>
+          </div>
+        </section>
+
+        {/* Grid Section */}
+        <section
+          ref={contentRef}
+          className="container px-6 py-12 mx-auto scroll-mt-20"
+        >
+          <div className="grid grid-cols-2 gap-8">
+            <div className="p-4 bg-gray-100 aspect-video">
+              <h3 className="text-lg font-bold">컨텐츠 소개 - 도전과제</h3>
+            </div>
+            <div className="p-4 bg-gray-100 aspect-video">
+              <h3 className="text-lg font-bold">컨텐츠 소개 - 던전</h3>
+            </div>
+            <div className="p-4 bg-gray-100 aspect-video">
+              <h3 className="text-lg font-bold">컨텐츠 소개 - 퀘스트</h3>
+            </div>
+            <div className="p-4 bg-gray-200 aspect-video">
+              <h3 className="text-lg font-bold">컨텐츠 소개 - 퀘스트</h3>
+            </div>
+          </div>
+        </section>
+
+        {/* Discord Section */}
+        <section
+          ref={discordRef}
+          className="py-12 text-center bg-white scroll-mt-20"
+        >
+          <div className="max-w-2xl px-6 mx-auto">
+            <p className="mb-4">
+              거북이 놀이터 서비스는 일부 공개되어 운영됩니다!
+            </p>
+            <p className="mb-8">
+              공식 디스코드 서버에 참가하여 게임을 즐겨보세요!
+            </p>
+            <img
+              src="/assets/discord-logo.png"
+              alt="Discord"
+              className="mx-auto cursor-pointer hover:opacity-90"
+              onClick={() => window.open("https://discord.gg/2Ah2ktBp")}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+      <Footer />
     </div>
   );
 }

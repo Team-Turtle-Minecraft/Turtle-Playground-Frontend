@@ -1,7 +1,5 @@
 "use client";
 
-//app/auth/signup/page.tsx
-
 import { useEffect, useState } from "react";
 import type { SnsType } from "@/types/auth";
 import { checkNicknameDuplicate } from "@/apis/api/checkNickname";

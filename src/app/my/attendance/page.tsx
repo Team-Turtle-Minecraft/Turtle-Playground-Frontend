@@ -10,20 +10,88 @@ import Modal from "@/components/common/Modal";
 import { getUserInfo } from "@/apis/api/getUserInfo";
 import { refreshToken } from "@/apis/api/refreshToken";
 import { checkAttendance } from "@/apis/api/attendance";
+import { fetchAttendanceHistory } from "@/apis/api/fetchAttendanceHistory";
+import { claimAttendanceReward } from "@/apis/api/attendanceReward";
+import { fetchAttendanceRewardHistory } from "@/apis/api/fetchAttendanceRewardHistory";
 
 export default function AttendancePage() {
   const [userInfo, setUserInfo] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [attendanceData, setAttendanceData] = useState<{
-    [key: string]: "checked" | "missed";
+    [key: string]: "checked";
   }>({});
   const [modalInfo, setModalInfo] = useState({ isOpen: false, message: "" });
   const [attendanceCount, setAttendanceCount] = useState(0);
   const [totalDays, setTotalDays] = useState(0);
+  const [rewardStatus, setRewardStatus] = useState({
+    fifteenDays: false,
+    monthly: false,
+    claimed15Days: false,
+    claimedMonthly: false,
+  });
 
   const handleAttendanceCountChange = (count: number, total: number) => {
     setAttendanceCount(count);
     setTotalDays(total);
+  };
+
+  const updateRewardStatus = async () => {
+    try {
+      const rewardHistory = await fetchAttendanceRewardHistory();
+      setRewardStatus((prev) => ({
+        ...prev,
+        claimed15Days: rewardHistory.halfAttendanceRewardStatus,
+        claimedMonthly: rewardHistory.fullAttendanceRewardStatus,
+        fifteenDays:
+          attendanceCount >= 15 && !rewardHistory.halfAttendanceRewardStatus,
+        monthly:
+          attendanceCount === totalDays &&
+          !rewardHistory.fullAttendanceRewardStatus,
+      }));
+    } catch (error) {
+      console.error("보상 기록 조회 실패:", error);
+    }
+  };
+
+  useEffect(() => {
+    updateRewardStatus();
+  }, [attendanceCount, totalDays]);
+
+  const handleRewardClaim = async (type: "15days" | "allDays") => {
+    try {
+      await claimAttendanceReward(type);
+      await updateRewardStatus();
+      setModalInfo({
+        isOpen: true,
+        message: "보상을 수령하였습니다!",
+      });
+    } catch (error) {
+      console.error("보상 수령 실패:", error);
+    }
+  };
+
+  const updateAttendanceData = async () => {
+    try {
+      const history = await fetchAttendanceHistory();
+      setAttendanceCount(history.attendanceCount);
+      setTotalDays(
+        new Date(
+          new Date().getFullYear(),
+          new Date().getMonth() + 1,
+          0
+        ).getDate()
+      );
+
+      const newAttendanceData: { [key: string]: "checked" } = {};
+      history.attendanceHistory.forEach((date) => {
+        const dateStr = date.split("T")[0];
+        newAttendanceData[dateStr] = "checked";
+      });
+
+      setAttendanceData(newAttendanceData);
+    } catch (error) {
+      console.error("출석 기록 조회 실패:", error);
+    }
   };
 
   const handleAttendance = async () => {
@@ -52,62 +120,73 @@ export default function AttendancePage() {
         return;
       }
 
-      // 출석 성공 시 캘린더 업데이트
-      const today = new Date();
-      const dateStr = `${today.getFullYear()}-${String(
-        today.getMonth() + 1
-      ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-      setAttendanceData((prev) => ({
-        ...prev,
-        [dateStr]: "checked",
-      }));
+      await updateAttendanceData();
+      setModalInfo({
+        isOpen: true,
+        message: "출석체크 하였습니다!",
+      });
     } catch (error) {
       console.error("출석체크 실패:", error);
     }
   };
 
   useEffect(() => {
-    const checkAuthAndFetchInfo = async () => {
+    const initPage = async () => {
       try {
-        const accessToken = localStorage.getItem("accessToken");
+        const [info, history] = await Promise.all([
+          getUserInfo(),
+          fetchAttendanceHistory(),
+        ]);
 
-        if (!accessToken) {
-          alert("로그인을 먼저 진행해주세요!");
-          window.location.href = "/auth";
-          return;
-        }
+        setUserInfo(info);
+        setAttendanceCount(history.attendanceCount);
 
-        try {
-          const info = await getUserInfo();
-          setUserInfo(info);
-        } catch (error: any) {
-          console.error("사용자 정보 로드 실패:", error);
+        const newAttendanceData: { [key: string]: "checked" } = {};
+        history.attendanceHistory.forEach((date) => {
+          const dateStr = date.split("T")[0];
+          newAttendanceData[dateStr] = "checked";
+        });
 
-          if (error.errorCode === "ExpiredAccessTokenError") {
-            try {
-              const newAccessToken = await refreshToken();
-              if (newAccessToken) {
-                const retryInfo = await getUserInfo();
-                setUserInfo(retryInfo);
-              } else {
-                alert("로그인을 먼저 진행해주세요!");
-                window.location.href = "/auth";
-              }
-            } catch (refreshError) {
+        setAttendanceData(newAttendanceData);
+        setTotalDays(
+          new Date(
+            new Date().getFullYear(),
+            new Date().getMonth() + 1,
+            0
+          ).getDate()
+        );
+
+        await updateRewardStatus();
+      } catch (error: any) {
+        console.error("데이터 로드 실패:", error);
+        if (error.errorCode === "ExpiredAccessTokenError") {
+          try {
+            const newAccessToken = await refreshToken();
+            if (newAccessToken) {
+              const [retryInfo, retryHistory] = await Promise.all([
+                getUserInfo(),
+                fetchAttendanceHistory(),
+              ]);
+              setUserInfo(retryInfo);
+              await updateAttendanceData();
+            } else {
               alert("로그인을 먼저 진행해주세요!");
               window.location.href = "/auth";
             }
-          } else {
+          } catch (refreshError) {
             alert("로그인을 먼저 진행해주세요!");
             window.location.href = "/auth";
           }
+        } else {
+          alert("로그인을 먼저 진행해주세요!");
+          window.location.href = "/auth";
         }
       } finally {
         setLoading(false);
       }
     };
 
-    checkAuthAndFetchInfo();
+    initPage();
   }, []);
 
   if (loading) {
@@ -136,24 +215,54 @@ export default function AttendancePage() {
 
         <div className="w-full h-px my-8 bg-gray-200"></div>
 
-        {/* 전체 컨텐츠를 감싸는 컨테이너 */}
         <div className="flex justify-center">
-          {/* 왼쪽 메뉴 */}
           <div className="w-48 shrink-0">
             <MenuNavigation currentMenu="출석체크" />
           </div>
 
-          {/* 가운데 정렬을 위한 wrapper */}
           <div className="flex justify-center flex-1">
-            {/* 메인 컨텐츠 영역 */}
             <div className="w-full max-w-[800px]">
               <h3 className="text-[34px] font-bold mb-4 text-center">
                 출석 체크
               </h3>
 
               <div className="flex flex-col items-center">
-                <div className="px-6 py-2 mb-8 bg-gray-100 rounded-full">
-                  이번달 출석률: {attendanceCount}/{totalDays}
+                <div className="w-full max-w-[600px] mb-8 flex justify-between">
+                  <div className="px-6 py-2 bg-gray-100 rounded-full">
+                    이번달 출석률: {attendanceCount}/{totalDays}
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleRewardClaim("15days")}
+                      disabled={
+                        !rewardStatus.fifteenDays || rewardStatus.claimed15Days
+                      }
+                      className={`px-4 py-2 rounded-full transition-colors ${
+                        rewardStatus.claimed15Days
+                          ? "bg-green-800 cursor-not-allowed text-white"
+                          : !rewardStatus.fifteenDays
+                            ? "bg-gray-300 cursor-not-allowed"
+                            : "bg-green-500 hover:bg-green-600 text-white"
+                      }`}
+                    >
+                      15일 출석 보상
+                    </button>
+                    <button
+                      onClick={() => handleRewardClaim("allDays")}
+                      disabled={
+                        !rewardStatus.monthly || rewardStatus.claimedMonthly
+                      }
+                      className={`px-4 py-2 rounded-full transition-colors ${
+                        rewardStatus.claimedMonthly
+                          ? "bg-green-800 cursor-not-allowed text-white"
+                          : !rewardStatus.monthly
+                            ? "bg-gray-300 cursor-not-allowed"
+                            : "bg-green-500 hover:bg-green-600 text-white"
+                      }`}
+                    >
+                      월간 보상
+                    </button>
+                  </div>
                 </div>
 
                 <Calendar
@@ -175,7 +284,6 @@ export default function AttendancePage() {
             </div>
           </div>
 
-          {/* 오른쪽 여백을 위한 더미 div */}
           <div className="w-48 shrink-0" />
         </div>
       </div>

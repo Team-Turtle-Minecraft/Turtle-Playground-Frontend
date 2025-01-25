@@ -2,11 +2,11 @@
 import { useEffect, useMemo } from "react";
 
 interface CalendarProps {
-  attendanceData: { [key: string]: "checked" | "missed" };
+  attendanceData: { [key: string]: "checked" };
   onAttendanceCountChange: (count: number, total: number) => void;
 }
 
-export const Calendar = ({
+const Calendar = ({
   attendanceData,
   onAttendanceCountChange,
 }: CalendarProps) => {
@@ -47,19 +47,14 @@ export const Calendar = ({
     }
 
     return { calendar: weeks, totalDays };
-  }, []);
-
-  useEffect(() => {
-    const checkedCount = Object.values(attendanceData).filter(
-      (status) => status === "checked"
-    ).length;
-    onAttendanceCountChange(checkedCount, totalDays);
-  }, [attendanceData, totalDays, onAttendanceCountChange]);
+  }, [attendanceData]);
 
   const getDateStatus = (day: number) => {
     if (day === 0) return "";
-    const date = new Date();
-    const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    const year = new Date().getFullYear();
+    const month = (new Date().getMonth() + 1).toString().padStart(2, "0");
+    const dayStr = day.toString().padStart(2, "0");
+    const dateStr = `${year}-${month}-${dayStr}`;
     return attendanceData[dateStr];
   };
 
@@ -86,9 +81,6 @@ export const Calendar = ({
                   <span>{day}</span>
                   {getDateStatus(day) === "checked" && (
                     <span className="absolute text-3xl text-green-500">✓</span>
-                  )}
-                  {getDateStatus(day) === "missed" && (
-                    <span className="absolute text-3xl text-red-500">✗</span>
                   )}
                 </>
               )}

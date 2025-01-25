@@ -22,8 +22,8 @@ export default function CharacterInfo({
           />
         </div>
 
-        {/* margin-top 값을 더 늘림 */}
-        <div className="mt-[90px]">
+        {/* margin-top 값을 120px로 늘림 */}
+        <div className="mt-[150px]">
           <table className="w-[400px] border-collapse border border-[#CFD8E7]">
             <tbody>
               <tr>

@@ -117,7 +117,6 @@ export default function PostDetailPage() {
           await increasePostViews(params.postId as string);
           const postData = await fetchPostDetail(params.postId as string);
           setPost(postData);
-          setIsLiked(postData.isLiked);
           setLikeCount(postData.likes);
           const likeStatus = await fetchPostLikeStatus(params.postId as string);
           setIsLiked(likeStatus.postLikeStatus);

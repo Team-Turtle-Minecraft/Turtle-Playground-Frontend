@@ -309,40 +309,29 @@ export default function EditPostPage() {
             />
           </div>
 
-          <Editor
-            ref={editorRef}
-            initialValue=""
-            height="600px"
-            initialEditType="wysiwyg"
-            previewStyle="vertical"
-            hideModeSwitch={true}
-            useCommandShortcut={true}
-            usageStatistics={false}
-            hooks={{
-              addImageBlobHook: onUploadImage,
-            }}
-            toolbarItems={[
-              ["heading", "bold", "italic", "strike"],
-              ["hr", "quote"],
-              ["ul", "ol", "task"],
-              ["table", "image", "link"],
-              ["code", "codeblock"],
-            ]}
-            placeholder="게시물 작성시 이미지 첨부는 필수입니다!"
-            onLoad={() => {
-              if (postContent && editorRef.current) {
-                try {
-                  const editor = editorRef.current.getInstance();
-                  if (editor) {
-                    editor.setHTML(postContent.content);
-                    setImageInfos(postContent.images);
-                  }
-                } catch (error) {
-                  console.error("에디터 초기화 중 오류:", error);
-                }
-              }
-            }}
-          />
+          {postContent && ( // postContent가 있을 때만 Editor를 렌더링
+            <Editor
+              ref={editorRef}
+              initialValue={postContent.content} // 초기값으로 직접 설정
+              height="600px"
+              initialEditType="wysiwyg"
+              previewStyle="vertical"
+              hideModeSwitch={true}
+              useCommandShortcut={true}
+              usageStatistics={false}
+              hooks={{
+                addImageBlobHook: onUploadImage,
+              }}
+              toolbarItems={[
+                ["heading", "bold", "italic", "strike"],
+                ["hr", "quote"],
+                ["ul", "ol", "task"],
+                ["table", "image", "link"],
+                ["code", "codeblock"],
+              ]}
+              placeholder="게시물 작성시 이미지 첨부는 필수입니다!"
+            />
+          )}
         </div>
 
         <div className="flex justify-end gap-2">

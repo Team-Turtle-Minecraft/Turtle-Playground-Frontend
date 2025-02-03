@@ -330,18 +330,13 @@ export default function CommunityPage() {
           </button>
         </div>
       </main>
-      return (
-      <div className="flex flex-col min-h-screen">
-        {/* 기존 코드 유지 */}
-        <Footer />
-        <Modal
-          isOpen={showLengthModal}
-          onClose={() => setShowLengthModal(false)}
-          message="공백없이 2글자 이상 입력해주세요!"
-        />
-      </div>
-      );
+      {/* 기존 코드 유지 */}
       <Footer />
+      <Modal
+        isOpen={showLengthModal}
+        onClose={() => setShowLengthModal(false)}
+        message="공백없이 2글자 이상 입력해주세요!"
+      />
     </div>
   );
 }

@@ -9,7 +9,9 @@ import { refreshToken } from "@/apis/api/refreshToken";
 export default function Header() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = async () => {
     try {
@@ -40,19 +42,15 @@ export default function Header() {
           } catch (error: any) {
             console.error("사용자 정보 로드 실패:", error);
 
-            // error.response?.data 대신 error를 직접 확인
             if (error.errorCode === "ExpiredAccessTokenError") {
               try {
-                // 토큰 재발급 시도
                 const newAccessToken = await refreshToken();
                 if (newAccessToken) {
-                  // 새 토큰으로 사용자 정보 다시 조회
                   const retryInfo = await getUserInfo();
                   setUserInfo(retryInfo);
                 }
               } catch (refreshError: any) {
                 console.error("토큰 재발급 실패:", refreshError);
-                // ExpiredRefreshTokenError인 경우에만 토큰 삭제
                 if (refreshError.errorCode === "ExpiredRefreshTokenError") {
                   localStorage.removeItem("accessToken");
                   localStorage.removeItem("refreshToken");
@@ -78,18 +76,160 @@ export default function Header() {
       ) {
         setShowDropdown(false);
       }
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target as Node)
+      ) {
+        setShowMobileMenu(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  return (
-    <nav className="flex items-center justify-center px-6 py-4 bg-white">
-      <div className="flex items-center justify-between w-full max-w-7xl">
-        <div className="w-[200px]"></div>
+  const NavigationLinks = () => (
+    <>
+      <a href="/community" className="text-xl hover:text-gray-600">
+        커뮤니티
+      </a>
+      <a href="/ranking/level" className="text-xl hover:text-gray-600">
+        랭킹
+      </a>
+      <a href="/my/attendance" className="text-xl hover:text-gray-600">
+        출석체크
+      </a>
+    </>
+  );
 
-        <div className="flex items-center space-x-12">
+  const AuthButtons = () => (
+    <>
+      <button
+        onClick={() => (window.location.href = "/auth")}
+        className="px-4 py-2 text-gray-700 transition-colors bg-gray-100 rounded hover:bg-gray-200"
+      >
+        로그인
+      </button>
+      <button
+        onClick={() => (window.location.href = "/auth")}
+        className="px-4 py-2 ml-2 text-white transition-colors bg-gray-800 rounded hover:bg-gray-700"
+      >
+        회원가입
+      </button>
+    </>
+  );
+
+  return (
+    <nav className="bg-white">
+      <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Desktop View */}
+        <div className="items-center justify-between hidden h-24 lg:flex">
+          <div className="w-[200px]" /> {/* 좌측 여백 유지 */}
+          <div className="flex items-center space-x-12">
+            <div
+              className="flex flex-col items-center cursor-pointer"
+              onClick={() => (window.location.href = "/")}
+            >
+              <img
+                src="/assets/turtle-playground-logo.png"
+                alt="거북이 놀이터"
+                className="w-[98px] h-[68px] object-contain"
+              />
+              <span className="text-[20px] mt-1">거북이 놀이터</span>
+            </div>
+
+            <a href="/community" className="text-[22px] hover:text-gray-600">
+              커뮤니티
+            </a>
+            <a
+              href="/ranking/level"
+              className="text-[22px] hover:text-gray-600"
+            >
+              랭킹
+            </a>
+            <a
+              href="/my/attendance"
+              className="text-[22px] hover:text-gray-600"
+            >
+              출석체크
+            </a>
+          </div>
+          <div className="w-[200px] flex justify-end">
+            {userInfo ? (
+              <div
+                ref={dropdownRef}
+                className="relative w-24 h-24"
+                onMouseEnter={() => setShowDropdown(true)}
+                onMouseLeave={() => setShowDropdown(false)}
+              >
+                <div className="flex flex-col items-center justify-center w-full h-full cursor-pointer">
+                  <img
+                    src={`https://api.creepernation.net/avatar/${userInfo.nickname}`}
+                    alt="프로필"
+                    className="w-[53px] h-[53.33px] rounded"
+                  />
+                  <span className="text-[15px] mt-1">{userInfo.nickname}</span>
+                </div>
+
+                {showDropdown && (
+                  <div className="absolute right-0 z-50 w-32 py-2 bg-white rounded-lg shadow-lg top-24">
+                    <button
+                      onClick={() => (window.location.href = "/my/basic")}
+                      className="w-full px-4 py-2 text-left hover:bg-gray-100"
+                    >
+                      내정보 조회
+                    </button>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full px-4 py-2 text-left text-red-500 hover:bg-gray-100"
+                    >
+                      로그아웃
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div>
+                <button
+                  onClick={() => (window.location.href = "/auth")}
+                  className="px-4 py-2 text-gray-700 transition-colors bg-gray-100 rounded hover:bg-gray-200"
+                >
+                  로그인
+                </button>
+                <button
+                  onClick={() => (window.location.href = "/auth")}
+                  className="px-4 py-2 ml-2 text-white transition-colors bg-gray-800 rounded hover:bg-gray-700"
+                >
+                  회원가입
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Mobile View */}
+        <div className="flex items-center justify-between h-20 lg:hidden">
+          <button
+            onClick={() => setShowMobileMenu(!showMobileMenu)}
+            className="p-2 text-gray-700 rounded hover:bg-gray-100"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+          {/* 모바일 로고 */}
           <div
             className="flex flex-col items-center cursor-pointer"
             onClick={() => (window.location.href = "/")}
@@ -97,75 +237,71 @@ export default function Header() {
             <img
               src="/assets/turtle-playground-logo.png"
               alt="거북이 놀이터"
-              className="w-[98px] h-[68px] object-contain"
+              className="w-[78px] h-[54px] object-contain"
             />
-            <span className="text-[20px] mt-1">거북이 놀이터</span>
+            <span className="text-base">거북이 놀이터</span>
           </div>
-
-          <a href="/community" className="text-[22px]">
-            커뮤니티
-          </a>
-          <a href="/ranking" className="text-[22px]">
-            랭킹
-          </a>
-          <a href="/my/attendance" className="text-[22px]">
-            출석체크
-          </a>
+          {/* 모바일 프로필/로그인 */}
+          <div className="w-[24px]" /> {/* 우측 여백 맞추기 */}
         </div>
 
-        <div className="w-[200px] flex justify-end">
-          {userInfo ? (
-            <div
-              ref={dropdownRef}
-              className="relative w-24 h-24" // 컨테이너 크기 고정
-              onMouseEnter={() => setShowDropdown(true)}
-              onMouseLeave={() => setShowDropdown(false)}
-            >
-              {/* 프로필 이미지와 닉네임을 포함하는 컨테이너 */}
-              <div className="flex flex-col items-center justify-center w-full h-full cursor-pointer">
-                <img
-                  src={`https://api.creepernation.net/avatar/${userInfo.nickname}`}
-                  alt="프로필"
-                  className="w-[53px] h-[53.33px] rounded"
-                />
-                <span className="text-[15px] mt-1">{userInfo.nickname}</span>
+        {/* 모바일 메뉴 */}
+        {showMobileMenu && (
+          <div ref={mobileMenuRef} className="lg:hidden">
+            <div className="px-4 py-2 space-y-3 bg-white shadow-lg">
+              <a href="/community" className="block py-2 text-lg">
+                커뮤니티
+              </a>
+              <a href="/ranking/level" className="block py-2 text-lg">
+                랭킹
+              </a>
+              <a href="/my/attendance" className="block py-2 text-lg">
+                출석체크
+              </a>
+              <div className="pt-3 border-t">
+                {userInfo ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-3">
+                      <img
+                        src={`https://api.creepernation.net/avatar/${userInfo.nickname}`}
+                        alt="프로필"
+                        className="w-10 h-10 rounded"
+                      />
+                      <span>{userInfo.nickname}</span>
+                    </div>
+                    <button
+                      onClick={() => (window.location.href = "/my/basic")}
+                      className="block w-full py-2 text-left"
+                    >
+                      내정보 조회
+                    </button>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full py-2 text-left text-red-500"
+                    >
+                      로그아웃
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col space-y-2">
+                    <button
+                      onClick={() => (window.location.href = "/auth")}
+                      className="w-full px-4 py-2 text-center text-gray-700 bg-gray-100 rounded hover:bg-gray-200"
+                    >
+                      로그인
+                    </button>
+                    <button
+                      onClick={() => (window.location.href = "/auth")}
+                      className="w-full px-4 py-2 text-center text-white bg-gray-800 rounded hover:bg-gray-700"
+                    >
+                      회원가입
+                    </button>
+                  </div>
+                )}
               </div>
-
-              {/* 드롭다운 메뉴 */}
-              {showDropdown && (
-                <div className="absolute right-0 z-50 w-32 py-2 bg-white rounded-lg shadow-lg top-24">
-                  <button
-                    onClick={() => (window.location.href = "/my/basic")}
-                    className="w-full px-4 py-2 text-left hover:bg-gray-100"
-                  >
-                    내정보 조회
-                  </button>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full px-4 py-2 text-left text-red-500 hover:bg-gray-100"
-                  >
-                    로그아웃
-                  </button>
-                </div>
-              )}
             </div>
-          ) : (
-            <>
-              <button
-                onClick={() => (window.location.href = "/auth")}
-                className="px-4 py-2 text-gray-700 transition-colors bg-gray-100 rounded hover:bg-gray-200"
-              >
-                로그인
-              </button>
-              <button
-                onClick={() => (window.location.href = "/auth")}
-                className="px-4 py-2 ml-2 text-white transition-colors bg-gray-800 rounded hover:bg-gray-700"
-              >
-                회원가입
-              </button>
-            </>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </nav>
   );

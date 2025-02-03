@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import Image from "next/image";
 
 export default function HomePage() {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -22,11 +23,24 @@ export default function HomePage() {
 
       <main className="flex-grow">
         {/* Banner Section */}
-        <section className="relative w-full h-[651px] bg-gray-100">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <h1 className="text-4xl font-bold">배너</h1>
+        <section className="relative w-full h-[651px]">
+          {/* 배너 이미지 */}
+          <div className="relative w-full h-full">
+            <Image
+              src="/assets/turtle-playground-banner.png"
+              alt="거북이 놀이터 배너"
+              fill
+              sizes="100vw"
+              priority
+              style={{
+                objectFit: "contain", // 'cover'에서 'contain'으로 변경
+                backgroundColor: "#f3f4f6", // 선택적: 이미지 주변 배경색 설정
+              }}
+            />
           </div>
-          <div className="absolute flex space-x-4 transform -translate-x-1/2 bottom-8 left-1/2">
+
+          {/* 배너 위에 올라가는 버튼들 */}
+          <div className="absolute z-10 flex space-x-4 transform -translate-x-1/2 bottom-8 left-1/2">
             <button
               onClick={scrollToContent}
               className="px-6 py-2 transition-colors bg-white rounded-full shadow-md hover:bg-gray-50"
@@ -48,17 +62,31 @@ export default function HomePage() {
           className="container px-6 py-12 mx-auto scroll-mt-20"
         >
           <div className="grid grid-cols-2 gap-8">
-            <div className="p-4 bg-gray-100 aspect-video">
+            <div
+              className="p-4 bg-gray-100 cursor-pointer aspect-video"
+              onClick={() => (window.location.href = "/contents/story-system")}
+            >
+              <h3 className="text-lg font-bold">컨텐츠 소개 - 스토리</h3>
+            </div>
+            <div
+              className="p-4 bg-gray-100 cursor-pointer aspect-video"
+              onClick={() =>
+                (window.location.href = "/contents/achievement-system")
+              }
+            >
               <h3 className="text-lg font-bold">컨텐츠 소개 - 도전과제</h3>
             </div>
-            <div className="p-4 bg-gray-100 aspect-video">
-              <h3 className="text-lg font-bold">컨텐츠 소개 - 던전</h3>
+            <div
+              className="p-4 bg-gray-100 cursor-pointer aspect-video"
+              onClick={() => (window.location.href = "/contents/combat-system")}
+            >
+              <h3 className="text-lg font-bold">컨텐츠 소개 - 전투</h3>
             </div>
-            <div className="p-4 bg-gray-100 aspect-video">
-              <h3 className="text-lg font-bold">컨텐츠 소개 - 퀘스트</h3>
-            </div>
-            <div className="p-4 bg-gray-200 aspect-video">
-              <h3 className="text-lg font-bold">컨텐츠 소개 - 퀘스트</h3>
+            <div
+              className="p-4 bg-gray-200 cursor-pointer aspect-video"
+              onClick={() => (window.location.href = "/contents/living-system")}
+            >
+              <h3 className="text-lg font-bold">컨텐츠 소개 - 생활</h3>
             </div>
           </div>
         </section>

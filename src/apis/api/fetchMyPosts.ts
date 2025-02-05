@@ -1,3 +1,4 @@
+import { PostsResponse } from "@/types/myPosts";
 import { refreshToken } from "./refreshToken";
 
 export const fetchMyPosts = async (): Promise<PostsResponse> => {

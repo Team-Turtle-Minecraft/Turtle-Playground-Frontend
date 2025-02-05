@@ -13,6 +13,7 @@ import { fetchPostLikeStatus } from "@/apis/api/fetchPostLikeStatus";
 import { postLike } from "@/apis/api/postLike";
 import { increasePostViews } from "@/apis/api/increasePostViews";
 import { deletePost } from "@/apis/api/deletePost";
+import PostDetailSkeletonLoading from "@/components/skeleton/PostDetailSkeletonLoading";
 
 export default function PostDetailPage() {
   const params = useParams();
@@ -130,6 +131,10 @@ export default function PostDetailPage() {
 
     loadData();
   }, [params.postId]);
+
+  if (loading) {
+    return <PostDetailSkeletonLoading />;
+  }
 
   if (loading) return <div className="min-h-screen">Loading...</div>;
   if (!post)

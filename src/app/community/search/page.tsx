@@ -7,6 +7,7 @@ import Header from "@/components/layout/Header";
 import Modal from "@/components/common/Modal";
 import { Post, PostResponse } from "@/types/postList";
 import { fetchSearchPosts } from "@/apis/api/fetchSearchedPosts";
+import SearchSkeletonLoading from "@/components/skeleton/PostSearchSkeletonLoading";
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
@@ -18,6 +19,7 @@ export default function SearchPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [showLengthModal, setShowLengthModal] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const keyword = searchParams.get("keyword");
@@ -30,7 +32,10 @@ export default function SearchPage() {
   useEffect(() => {
     const fetchSearchResults = async () => {
       const keyword = searchParams.get("keyword");
-      if (!keyword) return;
+      if (!keyword) {
+        setLoading(false);
+        return;
+      }
 
       try {
         const response = await fetchSearchPosts({
@@ -44,11 +49,17 @@ export default function SearchPage() {
         }
       } catch (error) {
         console.error("검색 실패:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchSearchResults();
   }, [searchParams, currentPage]);
+
+  if (loading) {
+    return <SearchSkeletonLoading />;
+  }
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

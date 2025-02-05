@@ -7,6 +7,7 @@ import Header from "@/components/layout/Header";
 import { Post, PostResponse, PostType, SortType } from "@/types/postList";
 import { fetchCommunityPosts } from "@/apis/api/fetchPostList";
 import Modal from "@/components/common/Modal";
+import CommunitySkeletonLoading from "@/components/skeleton/CommunityMainSkeletonLoading";
 
 export default function CommunityPage() {
   const searchParams = useSearchParams();
@@ -22,6 +23,7 @@ export default function CommunityPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [showLengthModal, setShowLengthModal] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const categories = ["전체", "자유", "건축", "아이템", "공략", "팁"];
   const sortOptions = [
@@ -94,23 +96,33 @@ export default function CommunityPage() {
   // 데이터 fetching
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetchCommunityPosts({
-        sortType: selectedSort,
-        postType:
-          selectedCategory === "전체"
-            ? undefined
-            : getCategoryType(selectedCategory),
-        page: currentPage,
-      });
+      try {
+        const response = await fetchCommunityPosts({
+          sortType: selectedSort,
+          postType:
+            selectedCategory === "전체"
+              ? undefined
+              : getCategoryType(selectedCategory),
+          page: currentPage,
+        });
 
-      if (response) {
-        setPosts(response.posts);
-        setMetaData(response.metaData);
+        if (response) {
+          setPosts(response.posts);
+          setMetaData(response.metaData);
+        }
+      } catch (error) {
+        console.error("데이터 로드 실패:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchPosts();
   }, [selectedCategory, selectedSort, currentPage]);
+
+  if (loading) {
+    return <CommunitySkeletonLoading />;
+  }
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -228,7 +240,7 @@ export default function CommunityPage() {
                   <img
                     src={`${metaData?.postImageApiUrlPrefix}${post.imageName}`}
                     alt={post.title}
-                    className="object-cover w-full h-48"
+                    className="object-contain w-full h-48"
                     onLoad={(e) => {
                       const img = e.target as HTMLImageElement;
                       const token = localStorage.getItem("accessToken");
@@ -240,15 +252,66 @@ export default function CommunityPage() {
                     }}
                   />
                 </div>
-                <div className="p-4">
-                  <h3 className="mb-2 font-bold">{post.title}</h3>
-                  <div className="flex justify-between text-sm text-gray-600">
+                {/* 구분선 추가 */}
+                <div className="w-full h-[1px] bg-gray-200"></div>
+                {/* 컨텐츠 영역 */}
+                <div className="flex flex-col flex-grow p-4">
+                  {/* 카테고리 태그 */}
+                  <span className="inline-block px-3 py-1 mb-2 ml-0 text-sm bg-gray-100 rounded w-fit">
+                    {post.postType === "Free"
+                      ? "자유"
+                      : post.postType === "Architecture"
+                        ? "건축"
+                        : post.postType === "Item"
+                          ? "아이템"
+                          : post.postType === "Solution"
+                            ? "공략"
+                            : "팁"}
+                  </span>
+
+                  {/* 제목 */}
+                  <div className="px-1 mb-2 font-bold">{post.title}</div>
+
+                  {/* 작성자 */}
+                  <div className="px-1 text-sm text-gray-500">
                     <span>{post.creator}</span>
-                    <span>{post.createdAt.split("T")[0]}</span>
                   </div>
-                  <div className="flex justify-end mt-2 space-x-4 text-sm text-gray-600">
-                    <span>👁 {post.views}</span>
-                    <span>💖 {post.likes}</span>
+
+                  {/* 하단 정보 - 마진으로 아래쪽 배치 */}
+                  <div className="flex items-center justify-between mt-8 text-sm text-gray-500">
+                    <div className="flex items-center gap-4">
+                      {/* 작성시간 */}
+                      <div className="flex items-center gap-1 px-1">
+                        <img
+                          src="/assets/post-createdAt.png"
+                          alt="작성시간"
+                          className="w-4 h-4"
+                        />
+                        <span>
+                          {post.createdAt.split("T")[0].replace(/-/g, ".")}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex gap-4">
+                      {/* 좋아요 */}
+                      <div className="flex items-center gap-1">
+                        <img
+                          src="/assets/post-like.png"
+                          alt="좋아요"
+                          className="w-4 h-4"
+                        />
+                        <span>{post.likes}</span>
+                      </div>
+                      {/* 조회수 */}
+                      <div className="flex items-center gap-1">
+                        <img
+                          src="/assets/post-views.png"
+                          alt="조회수"
+                          className="w-4 h-4"
+                        />
+                        <span>{post.views}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

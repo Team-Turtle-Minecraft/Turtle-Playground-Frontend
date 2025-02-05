@@ -1,11 +1,11 @@
-interface Post {
+export interface Post {
   postId: number;
   title: string;
   creator: string;
   createdAt: string;
 }
 
-interface PostsResponse {
+export interface PostsResponse {
   postCount: number;
   myPosts: Post[];
 }

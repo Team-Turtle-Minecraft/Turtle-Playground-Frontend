@@ -135,7 +135,7 @@ export default function Header() {
                 alt="거북이 놀이터"
                 className="w-[98px] h-[68px] object-contain"
               />
-              <span className="text-[20px] mt-1">거북이 놀이터</span>
+              <span className="mt-0 text-20px">거북이 놀이터</span>
             </div>
 
             <a href="/community" className="text-[22px] hover:text-gray-600">

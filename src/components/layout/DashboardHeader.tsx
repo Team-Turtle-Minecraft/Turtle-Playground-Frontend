@@ -2,13 +2,34 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { logout } from "@/apis/api/logout";
 import Modal from "../common/Modal";
 
 export default function DashboardHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const sideMenuRef = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      sideMenuRef.current &&
+      !sideMenuRef.current.contains(event.target as Node)
+    ) {
+      setIsMenuOpen(false);
+      setActiveCategory(null);
+    }
+  };
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   const handleLogout = async () => {
     try {
@@ -21,18 +42,31 @@ export default function DashboardHeader() {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
 
-      // 로그아웃 성공 모달 표시
       setIsLogoutModalOpen(true);
-
-      // 모달이 잠시 표시된 후 메인 페이지로 이동
       setTimeout(() => {
         window.location.href = "/";
-      }, 1500); // 1.5초 후 이동
+      }, 1500);
     } catch (error) {
       console.error("로그아웃 실패:", error);
       alert("로그아웃에 실패했습니다.");
     }
   };
+
+  const communitySubMenu = [
+    { name: "자유", link: "/community?postType=Free" },
+    { name: "건축", link: "/community?postType=Architecture" },
+    { name: "아이템", link: "/community?postType=Item" },
+    { name: "공략", link: "/community?postType=Solution" },
+    { name: "팁", link: "/community?postType=Tip" },
+  ];
+
+  const rankingSubMenu = [
+    { name: "레벨", link: "/ranking/level" },
+    { name: "게시물", link: "/ranking/post" },
+    { name: "보스", link: "/ranking/boss" },
+    { name: "돈", link: "/ranking/money" },
+    { name: "도감", link: "/ranking/collection" },
+  ];
 
   return (
     <header className="flex items-center justify-between px-6 py-4 bg-white">
@@ -59,25 +93,94 @@ export default function DashboardHeader() {
         </Link>
       </div>
 
-      {/* 햄버거 메뉴 드롭다운 */}
-      {isMenuOpen && (
-        <div className="absolute left-0 z-50 w-48 py-2 bg-white rounded-md shadow-lg top-16">
-          <Link
-            href="/community"
-            className="block px-4 py-2 hover:bg-gray-100"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            커뮤니티
-          </Link>
-          <Link
-            href="/ranking/level"
-            className="block px-4 py-2 hover:bg-gray-100"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            랭킹
-          </Link>
+      {/* 사이드 메뉴 */}
+      <div
+        ref={sideMenuRef}
+        className={`fixed top-0 left-0 z-50 h-full w-64 bg-white shadow-xl transform transition-transform duration-300 ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="p-6">
+          <div className="mb-8 text-xl font-bold">거북이 놀이터</div>
+          <div className="space-y-6">
+            {/* 커뮤니티 섹션 */}
+            <div>
+              <div
+                className="flex items-center justify-between py-2 cursor-pointer hover:text-blue-600"
+                onClick={() => {
+                  if (activeCategory === "community") {
+                    window.location.href = "/community";
+                  } else {
+                    setActiveCategory(
+                      activeCategory === "community" ? null : "community"
+                    );
+                  }
+                }}
+              >
+                <span>커뮤니티</span>
+                <span
+                  className={`transform transition-transform duration-200 ${activeCategory === "community" ? "rotate-180" : ""}`}
+                >
+                  ▼
+                </span>
+              </div>
+              <div
+                className={`pl-4 space-y-2 overflow-hidden transition-all duration-300 ${
+                  activeCategory === "community" ? "max-h-48 mt-2" : "max-h-0"
+                }`}
+              >
+                {communitySubMenu.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.link}
+                    className="block py-1 text-gray-600 hover:text-blue-600"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* 랭킹 섹션 */}
+            <div>
+              <div
+                className="flex items-center justify-between py-2 cursor-pointer hover:text-blue-600"
+                onClick={() => {
+                  if (activeCategory === "ranking") {
+                    window.location.href = "/ranking/level";
+                  } else {
+                    setActiveCategory(
+                      activeCategory === "ranking" ? null : "ranking"
+                    );
+                  }
+                }}
+              >
+                <span>랭킹</span>
+                <span
+                  className={`transform transition-transform duration-200 ${activeCategory === "ranking" ? "rotate-180" : ""}`}
+                >
+                  ▼
+                </span>
+              </div>
+              <div
+                className={`pl-4 space-y-2 overflow-hidden transition-all duration-300 ${
+                  activeCategory === "ranking" ? "max-h-48 mt-2" : "max-h-0"
+                }`}
+              >
+                {rankingSubMenu.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.link}
+                    className="block py-1 text-gray-600 hover:text-blue-600"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-      )}
+      </div>
 
       {/* 중앙: 로고 */}
       <div

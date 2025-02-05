@@ -108,10 +108,10 @@ export default function PostRankingPage() {
                     </span>
 
                     {/* 제목 */}
-                    <div className="mb-2 font-bold">{post.title}</div>
+                    <div className="px-1 mb-2 font-bold">{post.title}</div>
 
                     {/* 작성자 */}
-                    <div className="text-sm text-gray-500">
+                    <div className="px-1 text-sm text-gray-500">
                       <span>{post.creator}</span>
                     </div>
 
@@ -119,7 +119,7 @@ export default function PostRankingPage() {
                     <div className="flex items-center justify-between mt-auto text-sm text-gray-500">
                       <div className="flex items-center gap-4">
                         {/* 작성시간 */}
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 px-1">
                           <img
                             src="/assets/post-createdAt.png"
                             alt="작성시간"

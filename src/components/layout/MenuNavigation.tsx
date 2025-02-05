@@ -9,7 +9,7 @@ interface MenuNavigationProps {
 export default function MenuNavigation({ currentMenu }: MenuNavigationProps) {
   const menus = [
     { name: "기본 정보", path: "/my/basic" },
-    { name: "강화 정보", path: "/my/enhancement" },
+    { name: "강화 정보", path: "/my/enchant" },
     { name: "커뮤니티 활동", path: "/my/posts" },
     { name: "출석체크", path: "/my/attendance" },
   ];

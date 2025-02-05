@@ -1,4 +1,4 @@
-// app/my/basic/page.tsx
+// app/my/enchant/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,10 +9,10 @@ import Footer from "@/components/layout/Footer";
 
 import { getUserInfo } from "@/apis/api/getUserInfo";
 import type { UserInfo } from "@/types/userInfo";
-import BasicInfoContent from "@/components/user/BasicInfoContent";
-import BasicInfoSkeletonLoading from "@/components/skeleton/BasicInfoSkeletonLoading";
+import SkeletonLoading from "@/components/skeleton/EnchantSkeletonLoading";
+import EnchantContent from "@/components/user/EnchantContent";
 
-export default function BasicInfoPage() {
+export default function EnchantPage() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -34,6 +34,7 @@ export default function BasicInfoPage() {
           window.location.href = "/auth";
         }
       } finally {
+        // 의도적으로 딜레이를 주어 스켈레톤이 깜빡거리지 않도록 함
         setTimeout(() => setLoading(false), 100);
       }
     };
@@ -42,7 +43,7 @@ export default function BasicInfoPage() {
   }, []);
 
   if (loading || !userInfo) {
-    return <BasicInfoSkeletonLoading />;
+    return <SkeletonLoading />;
   }
 
   return (
@@ -60,13 +61,12 @@ export default function BasicInfoPage() {
         <div className="flex justify-center gap-8">
           {/* 좌측 메뉴 너비 고정 */}
           <div className="w-48 shrink-0">
-            <MenuNavigation currentMenu="기본 정보" />
+            <MenuNavigation currentMenu="강화 정보" />
           </div>
 
           <div className="w-full max-w-[960px]">
-            <BasicInfoContent userInfo={userInfo} />
+            <EnchantContent userInfo={userInfo} />
           </div>
-
           <div className="w-48 shrink-0"></div>
         </div>
       </div>

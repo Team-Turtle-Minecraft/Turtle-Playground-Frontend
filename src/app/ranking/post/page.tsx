@@ -5,31 +5,39 @@ import { useEffect, useState } from "react";
 import RankingLayout from "@/components/ranking/RankingLayout";
 import { fetchPostRanking } from "@/apis/api/fetchPostRanking";
 import { Post } from "@/types/postList";
+import { PostRankingSkeletonLoading } from "@/components/skeleton/PostRankingSkeletonLoading";
 
 export default function PostRankingPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [postImagePrefix, setPostImagePrefix] = useState("");
+  const [isLoading, setIsLoading] = useState(true); // loading 상태 추가
 
   useEffect(() => {
     const fetchRanking = async () => {
       try {
+        setIsLoading(true); // 로딩 시작
         const response = await fetchPostRanking();
-        // 게시물을 좋아요 수로 먼저 정렬하고, 동일한 경우 조회수로 정렬
         const sortedPosts = response.posts.sort((a, b) => {
           if (a.likes !== b.likes) {
-            return b.likes - a.likes; // 좋아요 수 내림차순
+            return b.likes - a.likes;
           }
-          return b.views - a.views; // 좋아요 수가 같은 경우 조회수 내림차순
+          return b.views - a.views;
         });
         setPosts(sortedPosts);
         setPostImagePrefix(response.postImageApiUrlPrefix);
       } catch (error) {
         console.error("랭킹 로드 실패:", error);
+      } finally {
+        setIsLoading(false); // 로딩 종료
       }
     };
 
     fetchRanking();
   }, []);
+
+  if (isLoading) {
+    return <PostRankingSkeletonLoading />;
+  }
 
   return (
     <RankingLayout>

@@ -5,6 +5,7 @@ import RankingLayout from "@/components/ranking/RankingLayout";
 import { LevelRankingResponse } from "@/types/jobLevelRanking";
 import { frontToBackJobMapping } from "@/apis/utility/jobMapping";
 import { getLevelRanking } from "@/apis/api/fetchJobLevelRanking";
+import { LevelRankingSkeletonLoading } from "@/components/skeleton/LevelRankingSkeletonLoading";
 
 type JobCategory = "전투" | "생활";
 type CombatJob = "전사" | "도적" | "궁수" | "마법사";
@@ -71,6 +72,10 @@ export default function LevelRankingPage() {
         <div className="text-center text-red-600">{error}</div>
       </RankingLayout>
     );
+  }
+
+  if (isLoading) {
+    return <LevelRankingSkeletonLoading />;
   }
 
   return (

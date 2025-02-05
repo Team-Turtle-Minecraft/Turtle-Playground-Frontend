@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import RankingLayout from "@/components/ranking/RankingLayout";
 import { CollectionRankingResponse } from "@/types/collectionRanking";
 import { getCollectionRanking } from "@/apis/api/fetchCollectionRanking";
+import { CollectionRankingSkeletonLoading } from "@/components/skeleton/CollectionRankingLoading";
 
 export default function CollectionRankingPage() {
   const [rankingData, setRankingData] =
@@ -29,6 +30,10 @@ export default function CollectionRankingPage() {
   useEffect(() => {
     fetchRankingData();
   }, []);
+
+  if (isLoading) {
+    return <CollectionRankingSkeletonLoading />;
+  }
 
   // DENSE_RANK 순위 계산 함수
   const calculateRank = (index: number, progress: number) => {

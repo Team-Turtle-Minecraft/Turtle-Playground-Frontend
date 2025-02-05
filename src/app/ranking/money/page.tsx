@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import RankingLayout from "@/components/ranking/RankingLayout";
 import { MoneyRankingResponse } from "@/types/moneyRanking";
 import { getMoneyRanking } from "@/apis/api/fetchMoneyRanking";
+import { MoneyRankingSkeletonLoading } from "@/components/skeleton/MoneyRankingSkeletonLoading";
 
 export default function MoneyRankingPage() {
   const [rankingData, setRankingData] = useState<MoneyRankingResponse | null>(
@@ -30,6 +31,10 @@ export default function MoneyRankingPage() {
   useEffect(() => {
     fetchRankingData();
   }, []);
+
+  if (isLoading) {
+    return <MoneyRankingSkeletonLoading />;
+  }
 
   if (error) {
     return (

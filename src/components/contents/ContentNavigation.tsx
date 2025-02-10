@@ -1,5 +1,6 @@
 "use client";
-// src/app/contents/combat-system/Navigation.tsx
+
+// src/components/contents/ContentNavigation.tsx
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
@@ -14,17 +15,17 @@ export default function Navigation() {
   ];
 
   return (
-    <nav className="w-48 ">
-      <div className="text-right ">
-        <h2 className="text-[20px] font-medium mb-8">Contents</h2>
-        <div className="flex flex-col space-y-4 items-right">
+    <nav className="w-48">
+      <div className="text-right">
+        <h2 className="mb-8 text-xl">Contents</h2>
+        <div className="flex flex-col items-end space-y-4">
           {navigationItems.map((item) => (
             <Link
               key={item.path}
               href={item.path}
-              className={`text-[14px] ${
+              className={`text-sm ${
                 pathname === item.path
-                  ? "text-gray-900 font-semibold"
+                  ? "text-gray-900"
                   : "text-gray-400 hover:text-gray-600"
               }`}
             >

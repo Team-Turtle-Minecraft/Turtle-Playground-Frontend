@@ -30,7 +30,7 @@ export default function RankingLayout({ children }: RankingLayoutProps) {
         </div>
       </div>
 
-      <main className="container flex-grow px-4 py-8 mx-auto">
+      <main className="container flex-grow px-4 py-8 mx-auto mb-36">
         {/* 네비게이션 */}
         <RankingNavigation />
 

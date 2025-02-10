@@ -1,0 +1,75 @@
+// apis/api/fetchBossRanking.ts
+
+import { BossClearType, BossRankingResponse } from "@/types/bossRanking";
+import { refreshToken } from "./refreshToken";
+
+export const getBossRanking = async (
+  bossClearType: BossClearType,
+  bossName: string
+): Promise<BossRankingResponse> => {
+  const makeRequest = async (token: string) => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/ranking/boss?bossClearType=${bossClearType}&bossName=${bossName}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw { status: response.status, ...error };
+    }
+
+    return response.json();
+  };
+
+  try {
+    let accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) throw new Error("No access token");
+
+    try {
+      return await makeRequest(accessToken);
+    } catch (error: any) {
+      if (error.errorCode === "ExpiredAccessTokenError") {
+        const newToken = await refreshToken();
+        if (!newToken) throw new Error("Token refresh failed");
+        return await makeRequest(newToken);
+      }
+      throw error;
+    }
+  } catch (error) {
+    console.error("보스 랭킹 조회 실패:", error);
+    throw error;
+  }
+};
+
+// 시간 포맷팅 유틸리티 함수
+export const formatClearTime = (seconds: number): string => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
+};
+
+// 날짜 포맷팅 유틸리티 함수
+export const formatClearDay = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date
+    .toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
+    .replace(/\. /g, "-")
+    .replace(".", "");
+};
+
+// 파티 멤버 분리 유틸리티 함수
+export const parsePartyMembers = (partyMembers: string): string[] => {
+  if (!partyMembers.includes(",")) return [partyMembers];
+  return partyMembers
+    .split(",")
+    .slice(0, -1)
+    .map((member) => member.trim());
+};

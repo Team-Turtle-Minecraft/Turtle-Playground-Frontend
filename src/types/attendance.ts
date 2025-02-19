@@ -7,3 +7,5 @@ export interface AttendanceHistoryResponse {
   attendanceCount: number;
   attendanceHistory: string[];
 }
+
+export type AttendanceStatus = "checked" | "missed";

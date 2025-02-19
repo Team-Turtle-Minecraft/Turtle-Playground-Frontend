@@ -16,18 +16,21 @@ export default function RankingNavigation() {
   const pathname = usePathname();
 
   return (
-    <div className="flex mb-8 border-b">
-      <div className="w-24 py-2 font-bold text-center border-r">카테고리</div>
-      <div className="flex flex-1">
+    <div className="flex flex-col mb-4 border-b sm:flex-row sm:mb-6 md:mb-8">
+      <div className="w-full py-2 font-bold text-center sm:w-24 sm:border-r">
+        카테고리
+      </div>
+      <div className="flex flex-wrap w-full sm:flex-nowrap">
         {RANKING_ROUTES.map(({ path, label }) => (
           <Link
             key={path}
             href={path}
-            className={`px-6 py-2 text-gray-600 ${
-              pathname === path
-                ? "border-b-2 border-black font-bold text-black"
-                : "hover:text-black"
-            }`}
+            className={`flex-1 sm:flex-none text-center px-3 sm:px-6 py-2 text-sm sm:text-base text-gray-600 
+              ${
+                pathname === path
+                  ? "border-b-2 border-black font-bold text-black"
+                  : "hover:text-black"
+              }`}
           >
             {label}
           </Link>

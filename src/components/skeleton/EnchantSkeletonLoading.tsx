@@ -1,76 +1,46 @@
 // components/common/EnchantSkeletonLoading.tsx
-export default function EnchantSkeletonLoading() {
+export function EnchantSkeletonContent() {
   const shimmerClass =
     "bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer";
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="flex items-center justify-between px-6 py-4">
-        <div className="flex items-center gap-4">
-          <div className={`w-8 h-8 rounded ${shimmerClass}`}></div>
-          <div className={`w-8 h-8 rounded ${shimmerClass}`}></div>
-        </div>
-        <div className="flex flex-col items-center">
-          <div className={`w-[98px] h-[68px] rounded ${shimmerClass}`}></div>
-          <div className={`w-32 h-6 mt-1 rounded ${shimmerClass}`}></div>
-        </div>
-        <div className={`w-20 h-8 rounded ${shimmerClass}`}></div>
-      </header>
+    <div className="w-full px-4 md:px-6 lg:px-0">
+      {/* 제목 */}
+      <div
+        className={`w-40 md:w-48 lg:w-56 h-8 md:h-9 lg:h-10 mb-6 md:mb-8 rounded ${shimmerClass}`}
+      />
 
-      <div className="w-full h-px bg-gray-200"></div>
-
-      <div className="container flex-grow px-6 py-8 mx-auto max-w-7xl">
-        <div className="flex justify-center w-full">
-          <div className="flex items-center gap-[100px]">
-            <div className="flex flex-col items-center">
-              <div className={`w-48 h-10 mb-2 rounded ${shimmerClass}`}></div>
-              <div className={`w-48 h-10 mb-6 rounded ${shimmerClass}`}></div>
-              <div
-                className={`w-[150px] h-[154.64px] rounded ${shimmerClass}`}
-              ></div>
-            </div>
-            <div className="mt-[150px]">
-              <div className="w-[400px] space-y-2">
-                <div className={`h-12 rounded ${shimmerClass}`}></div>
-                <div className={`h-12 rounded ${shimmerClass}`}></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="w-full h-px my-8 bg-gray-200"></div>
-
-        <div className="flex justify-center gap-8">
-          <div className="w-48 space-y-4 shrink-0">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className={`h-6 rounded ${shimmerClass}`}></div>
-            ))}
-          </div>
-
-          <div className="w-full max-w-[960px]">
-            <div className={`w-48 h-10 mb-8 rounded ${shimmerClass}`}></div>
-
-            {/* 통계 카드 스켈레톤 */}
-            <div className="grid grid-cols-4 gap-4 mb-8">
-              {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className={`h-[120px] rounded-lg ${shimmerClass}`}
-                ></div>
-              ))}
-            </div>
-
-            {/* 차트 스켈레톤 */}
+      {/* 통계 카드 */}
+      <div className="grid grid-cols-2 gap-3 mb-6 md:grid-cols-4 md:gap-4 md:mb-8">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="p-4 bg-white rounded-lg shadow-md md:p-6">
             <div
-              className={`w-full h-[400px] rounded-lg ${shimmerClass}`}
-            ></div>
+              className={`w-24 md:w-28 h-5 md:h-6 mb-2 rounded ${shimmerClass}`}
+            />
+            <div
+              className={`w-16 md:w-20 h-7 md:h-8 lg:h-9 rounded ${shimmerClass}`}
+            />
           </div>
-
-          <div className="w-48 shrink-0"></div>
-        </div>
+        ))}
       </div>
 
-      <footer className={`h-[100px] rounded ${shimmerClass}`}></footer>
+      {/* 차트 영역 */}
+      <div className="p-4 bg-white rounded-lg shadow-md md:p-6 lg:p-8">
+        <div
+          className={`w-48 md:w-56 h-6 md:h-7 lg:h-8 mx-auto mb-4 md:mb-6 rounded ${shimmerClass}`}
+        />
+        <div className="flex flex-col items-center">
+          {/* 원형 차트 */}
+          <div
+            className={`w-60 h-60 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-full ${shimmerClass}`}
+          />
+          {/* 범례 */}
+          <div className="flex flex-col justify-center gap-4 mt-4 md:flex-row md:gap-8 md:mt-6">
+            <div className={`w-32 h-6 rounded ${shimmerClass}`} />
+            <div className={`w-32 h-6 rounded ${shimmerClass}`} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

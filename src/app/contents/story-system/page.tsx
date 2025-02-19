@@ -1,12 +1,59 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ContentPage from "@/components/contents/ContentsIntro";
 import Navigation from "@/components/contents/ContentNavigation";
+import ContentSkeletonLoading from "@/components/skeleton/ContentSkeletonLoading";
 
 export default function StorySystem() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const preloadImages = async () => {
+      const images = [
+        "/assets/story-01.png",
+        "/assets/story-system-2.png",
+        "/assets/story-03.gif",
+      ];
+
+      try {
+        await Promise.all(
+          images.map(
+            (src) =>
+              new Promise((resolve) => {
+                const imgElement = document.createElement("img");
+                imgElement.src = src;
+                imgElement.onload = () => resolve(true);
+                imgElement.onerror = () => resolve(false); // 이미지 로드 실패해도 진행
+              })
+          )
+        );
+      } catch (error) {
+        console.warn("Some images failed to preload:", error);
+      } finally {
+        // 일정 시간 후에도 강제로 로딩 완료
+        const timeoutId = setTimeout(() => {
+          setLoading(false);
+        }, 3000); // 3초 후 타임아웃
+
+        setLoading(false);
+        return () => clearTimeout(timeoutId);
+      }
+    };
+
+    preloadImages();
+  }, []);
+
+  if (loading) {
+    return <ContentSkeletonLoading />;
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
+      <div className="w-full h-px bg-gray-200"></div>
       <main className="flex-grow bg-white">
         <div className="max-w-[1920px] mx-auto relative pt-[92px]">
           <div className="hidden lg:block absolute right-32 top-[200px]">
@@ -17,9 +64,9 @@ export default function StorySystem() {
               title="Story System"
               koreanTitle="스토리 시스템"
               images={[
-                "/assets/story-system-1.png",
+                "/assets/story-01.png",
                 "/assets/story-system-2.png",
-                "/assets/story-system-3.png",
+                "/assets/story-03.gif",
               ]}
               mainTitle={
                 <>

@@ -8,10 +8,10 @@ export default function Navigation() {
   const pathname = usePathname();
 
   const navigationItems = [
+    { name: "스토리 시스템", path: "/contents/story-system" },
+    { name: "도전과제 시스템", path: "/contents/achievement-system" },
     { name: "전투 시스템", path: "/contents/combat-system" },
     { name: "생활 시스템", path: "/contents/living-system" },
-    { name: "도전과제 시스템", path: "/contents/achievement-system" },
-    { name: "스토리 시스템", path: "/contents/story-system" },
   ];
 
   return (

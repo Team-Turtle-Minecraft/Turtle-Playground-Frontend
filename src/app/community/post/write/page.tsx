@@ -9,12 +9,13 @@ import { PostType } from "@/types/postList";
 import { createPost } from "@/apis/api/createPost";
 import { useRouter } from "next/navigation";
 import Modal from "@/components/common/Modal";
+import WritePostSkeletonLoading from "@/components/skeleton/PostWriterAndEditSkeletonLoading";
 
 const Editor = dynamic(
   () => import("@toast-ui/react-editor").then((mod) => mod.Editor),
   {
     ssr: false,
-    loading: () => <p>에디터 로딩중...</p>,
+    loading: () => <WritePostSkeletonLoading />,
   }
 );
 
@@ -32,6 +33,7 @@ export default function WritePostPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageInfos, setImageInfos] = useState<ImageInfo[]>([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // 전체 페이지 로딩 상태 추가
 
   const categories = [
     { value: "Free", label: "자유" },
@@ -88,14 +90,12 @@ export default function WritePostPage() {
       return;
     }
 
-    // 현재 에디터에 표시된 이미지 URL들을 가져옴
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = content;
     const currentImageUrls = new Set(
       Array.from(tempDiv.getElementsByTagName("img")).map((img) => img.src)
     );
 
-    // 현재 에디터에 있는 이미지 파일들만 필터링
     const activeImageFiles = imageInfos
       .filter((info) => currentImageUrls.has(info.url))
       .map((info) => info.file);
@@ -120,14 +120,12 @@ export default function WritePostPage() {
         new Blob([JSON.stringify(postData)], { type: "application/json" })
       );
 
-      // 현재 에디터에 표시된 이미지 파일들만 전송
       activeImageFiles.forEach((file) => {
         formData.append("imageFile", file);
       });
 
       await createPost(formData);
 
-      // 모든 임시 URL 정리
       imageInfos.forEach((info) => {
         URL.revokeObjectURL(info.url);
       });
@@ -142,105 +140,102 @@ export default function WritePostPage() {
   };
 
   useEffect(() => {
-    // 로그인 체크
-    const accessToken = localStorage.getItem("accessToken");
-    if (!accessToken) {
-      setShowLoginModal(true);
-    }
+    const initializePage = async () => {
+      setIsLoading(true);
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        setShowLoginModal(true);
+      }
+      // 에디터 초기화 등 필요한 작업을 수행
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // 에디터 로딩 시간 고려
+      setIsLoading(false);
+    };
 
-    const editor = editorRef.current?.getInstance();
-    if (editor) {
-      editor.on("change", () => {
-        const content = editor.getHTML();
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = content;
-        const currentImageUrls = new Set(
-          Array.from(tempDiv.getElementsByTagName("img")).map((img) => img.src)
-        );
-
-        // 현재 에디터에 없는 이미지들의 URL 정리
-        imageInfos.forEach((info) => {
-          if (!currentImageUrls.has(info.url) && !info.isDeleted) {
-            URL.revokeObjectURL(info.url);
-            info.isDeleted = true;
-          }
-        });
-      });
-    }
+    initializePage();
 
     return () => {
-      // 컴포넌트 언마운트 시 모든 임시 URL 정리
       imageInfos.forEach((info) => {
         URL.revokeObjectURL(info.url);
       });
     };
-  }, [imageInfos]);
+  }, []);
+
+  if (isLoading) {
+    return <WritePostSkeletonLoading />;
+  }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-white">
       <Header />
 
-      <main className="container flex-grow px-4 py-8 mx-auto">
-        <div className="mb-6">
-          <div className="flex gap-4 mb-4">
-            <select
-              value={postType}
-              onChange={(e) => setPostType(e.target.value as PostType)}
-              className="px-4 py-2 border rounded-md"
-            >
-              {categories.map((category) => (
-                <option key={category.value} value={category.value}>
-                  {category.label}
-                </option>
-              ))}
-            </select>
+      <main className="flex-grow w-full">
+        <div className="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8 sm:py-6 lg:py-8">
+          <div className="mb-4 sm:mb-6">
+            {/* 카테고리/제목 입력 영역 */}
+            <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:gap-4">
+              <select
+                value={postType}
+                onChange={(e) => setPostType(e.target.value as PostType)}
+                className="px-3 py-2 text-sm border rounded-md sm:px-4 sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 sm:w-32 lg:w-40"
+              >
+                {categories.map((category) => (
+                  <option key={category.value} value={category.value}>
+                    {category.label}
+                  </option>
+                ))}
+              </select>
 
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="제목을 입력하세요"
-              className="flex-1 px-4 py-2 border rounded-md"
-            />
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="제목을 입력하세요"
+                className="flex-1 px-3 py-2 text-sm border rounded-md sm:px-4 sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* 에디터 영역 */}
+            <div className="border rounded-md">
+              <Editor
+                ref={editorRef}
+                initialValue={" "}
+                height="calc(100vh - 300px)"
+                initialEditType="wysiwyg"
+                previewStyle="tab"
+                hideModeSwitch={true}
+                useCommandShortcut={true}
+                usageStatistics={false}
+                hooks={{
+                  addImageBlobHook: onUploadImage,
+                }}
+                toolbarItems={[
+                  ["heading", "bold", "italic", "strike"],
+                  ["hr", "quote"],
+                  ["ul", "ol", "task"],
+                  ["table", "image", "link"],
+                  ["code", "codeblock"],
+                ]}
+                placeholder="게시물 작성시 이미지 첨부는 필수입니다!"
+              />
+            </div>
           </div>
 
-          <Editor
-            ref={editorRef}
-            initialValue={" "}
-            height="600px"
-            initialEditType="wysiwyg"
-            previewStyle="tab"
-            hideModeSwitch={true}
-            useCommandShortcut={true}
-            usageStatistics={false}
-            hooks={{
-              addImageBlobHook: onUploadImage,
-            }}
-            toolbarItems={[
-              ["heading", "bold", "italic", "strike"],
-              ["hr", "quote"],
-              ["ul", "ol", "task"],
-              ["table", "image", "link"],
-              ["code", "codeblock"],
-            ]}
-            placeholder="게시물 작성시 이미지 첨부는 필수입니다!"
-          />
-        </div>
-
-        <div className="flex justify-end gap-2">
-          <button
-            onClick={() => router.back()}
-            className="px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-100"
-          >
-            취소
-          </button>
-          <button
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-            className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 disabled:bg-blue-300"
-          >
-            {isSubmitting ? "게시 중..." : "게시"}
-          </button>
+          {/* 버튼 영역 */}
+          <div className="flex justify-end gap-2 sm:gap-4">
+            <button
+              onClick={() => router.back()}
+              className="px-4 py-2 text-sm text-gray-600 transition-colors border rounded-md sm:px-6 sm:text-base hover:bg-gray-100"
+            >
+              취소
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className="px-4 py-2 text-sm text-white transition-colors bg-blue-500 rounded-md sm:px-6 sm:text-base hover:bg-blue-600 disabled:bg-blue-300"
+            >
+              {isSubmitting ? "게시 중..." : "게시"}
+            </button>
+          </div>
         </div>
       </main>
 

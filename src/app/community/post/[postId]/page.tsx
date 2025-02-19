@@ -1,3 +1,4 @@
+// app/community/post/[postId]/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -23,6 +24,7 @@ export default function PostDetailPage() {
   const [loading, setLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [modalConfig, setModalConfig] = useState<{
     isOpen: boolean;
     message: string;
@@ -47,7 +49,6 @@ export default function PostDetailPage() {
 
     try {
       const currentIsLiked = isLiked;
-      // 낙관적 업데이트
       setIsLiked(!currentIsLiked);
       setLikeCount((prevCount) =>
         currentIsLiked ? prevCount - 1 : prevCount + 1
@@ -58,7 +59,6 @@ export default function PostDetailPage() {
         const likeStatus = await fetchPostLikeStatus(post.postId.toString());
         setIsLiked(likeStatus.postLikeStatus);
 
-        // 모달 메시지 설정 및 표시
         setLikeModalConfig({
           isOpen: true,
           message: !currentIsLiked
@@ -69,12 +69,10 @@ export default function PostDetailPage() {
           },
         });
 
-        // 2초 후 자동으로 모달 닫기
         setTimeout(() => {
           setLikeModalConfig((prev) => ({ ...prev, isOpen: false }));
         }, 2000);
       } catch (error) {
-        // 실패시 원래 상태로 되돌리기
         setIsLiked(currentIsLiked);
         setLikeCount((prevCount) =>
           currentIsLiked ? prevCount + 1 : prevCount - 1
@@ -110,6 +108,13 @@ export default function PostDetailPage() {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        setShowLoginModal(true);
+        setLoading(false);
+        return;
+      }
+
       try {
         const userInfoData = await getUserInfo();
         setUserInfo(userInfoData);
@@ -136,161 +141,198 @@ export default function PostDetailPage() {
     return <PostDetailSkeletonLoading />;
   }
 
-  if (loading) return <div className="min-h-screen">Loading...</div>;
-  if (!post)
-    return <div className="min-h-screen">게시물을 찾을 수 없습니다.</div>;
+  if (!post) {
+    return (
+      <div className="flex flex-col min-h-screen bg-white">
+        <Header />
+        <div className="flex items-center justify-center flex-grow">
+          <div className="text-gray-500">게시물을 찾을 수 없습니다.</div>
+        </div>
+        <Footer />
+        <Modal
+          isOpen={showLoginModal}
+          onClose={() => {
+            setShowLoginModal(false);
+            router.push("/auth");
+          }}
+          message="로그인을 먼저 진행해주세요!"
+        />
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-white">
       <Header />
 
-      <div className="flex flex-col items-center w-full mt-[129px]">
-        <div className="w-[1260px] h-[1px] bg-black"></div>
+      <div className="flex flex-col flex-grow">
+        {/* 게시물 헤더 영역 */}
+        <div className="w-full mt-4 sm:mt-6 lg:mt-10">
+          <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div className="w-full h-px bg-black"></div>
 
-        {/* 게시물 정보 영역 */}
-        <div className="w-[1260px] py-6 px-4">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <div className="flex items-center gap-4">
-                <span className="px-3 py-1 text-sm bg-gray-100 rounded">
-                  {post.postType === "Free"
-                    ? "자유"
-                    : post.postType === "Architecture"
-                      ? "건축"
-                      : post.postType === "Item"
-                        ? "아이템"
-                        : post.postType === "Solution"
-                          ? "공략"
-                          : "팁"}
-                </span>
-                <h1 className="text-[24px] font-medium">{post.title}</h1>
-              </div>
-              <div className="flex items-center gap-6">
-                <div className="flex items-center gap-2">
-                  <img
-                    src="/assets/post-createdAt.png"
-                    alt="작성시간"
-                    className="w-5 h-5"
-                  />
-                  <p className="text-[15px]">
-                    {new Date(post.createdAt).toLocaleString("ko-KR", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: false,
-                    })}
-                  </p>
+            <div className="px-3 py-4 sm:py-6 sm:px-4">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="space-y-2 sm:space-y-3">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                    <span className="inline-block px-2 py-1 text-xs bg-gray-100 rounded sm:px-3 sm:text-sm w-fit">
+                      {post.postType === "Free"
+                        ? "자유"
+                        : post.postType === "Architecture"
+                          ? "건축"
+                          : post.postType === "Item"
+                            ? "아이템"
+                            : post.postType === "Solution"
+                              ? "공략"
+                              : "팁"}
+                    </span>
+                    <h1 className="text-xl sm:text-2xl lg:text-[24px] font-medium break-all">
+                      {post.title}
+                    </h1>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-3 text-sm sm:gap-6 sm:text-base">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <img
+                        src="/assets/post-createdAt.png"
+                        alt="작성시간"
+                        className="w-4 h-4 sm:w-5 sm:h-5"
+                      />
+                      <span>
+                        {new Date(post.createdAt).toLocaleString("ko-KR", {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false,
+                        })}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <img
+                        src="/assets/post-views.png"
+                        alt="조회수"
+                        className="w-4 h-4 sm:w-5 sm:h-5"
+                      />
+                      <span>{post.views}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <img
-                    src="/assets/post-views.png"
-                    alt="조회수"
-                    className="w-5 h-5"
-                  />
-                  <span className="text-[15px]">{post.views}</span>
+
+                <div className="flex items-center gap-3 sm:gap-6">
+                  <span className="text-sm sm:text-base">작성자</span>
+                  <div className="flex flex-col items-center gap-1">
+                    <img
+                      src={`https://api.creepernation.net/avatar/${post.creator}`}
+                      alt="작성자 아바타"
+                      className="w-8 h-8 rounded sm:w-10 sm:h-10"
+                    />
+                    <span className="text-sm sm:text-base">{post.creator}</span>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-6">
-              <span className="text-[15px]">작성자</span>
-              <div className="flex flex-col items-center gap-1">
+
+            <div className="h-px bg-[#B5B5B5] w-full"></div>
+          </div>
+        </div>
+
+        {/* 본문 영역 */}
+        <main className="flex-grow w-full">
+          <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div className="p-3 sm:p-6">
+              <div
+                className="prose max-w-none prose-img:mx-auto prose-img:my-4"
+                dangerouslySetInnerHTML={{
+                  __html: post.content.replace(
+                    /blob:http:\/\/localhost:3000\/[a-z0-9-]+/g,
+                    (match, offset) => {
+                      const imageIndex =
+                        post.content
+                          .slice(0, offset)
+                          .match(/blob:http:\/\/localhost:3000\/[a-z0-9-]+/g)
+                          ?.length || 0;
+                      return `${post.postImageApiUrlPrefix}${post.postImages[imageIndex]}`;
+                    }
+                  ),
+                }}
+              />
+            </div>
+
+            {/* 좋아요 버튼 */}
+            <div className="flex justify-center mt-8 sm:mt-12">
+              <button
+                className="flex items-center gap-2 transition-colors sm:gap-3 hover:opacity-80"
+                onClick={handleLikeToggle}
+              >
                 <img
-                  src={`https://api.creepernation.net/avatar/${post.creator}`}
-                  alt="작성자 아바타"
-                  className="w-10 h-10 rounded"
+                  src={
+                    isLiked
+                      ? "/assets/post-like.png"
+                      : "/assets/post-unlike.png"
+                  }
+                  alt={isLiked ? "좋아요 취소" : "좋아요"}
+                  className="w-6 h-6 sm:w-7 sm:h-7"
                 />
-                <span className="text-[15px]">{post.creator}</span>
+                <span className="text-lg sm:text-xl">{likeCount}</span>
+              </button>
+            </div>
+
+            <div className="h-px bg-[#B5B5B5] my-6 sm:my-8"></div>
+
+            {/* 작성자 전용 버튼 */}
+            {userInfo?.nickname === post.creator && (
+              <div className="flex justify-end mt-4 space-x-2 sm:space-x-4">
+                <button
+                  onClick={() =>
+                    router.push(`/community/post/edit/${post.postId}`)
+                  }
+                  className="px-3 py-2 text-sm text-white transition-colors bg-blue-500 rounded sm:px-4 sm:text-base hover:bg-blue-600"
+                >
+                  수정
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="px-3 py-2 text-sm text-white transition-colors bg-red-500 rounded sm:px-4 sm:text-base hover:bg-red-600"
+                >
+                  삭제
+                </button>
               </div>
+            )}
+
+            {/* 목록으로 버튼 */}
+            <div className="flex justify-center mb-8 sm:mb-12 lg:mb-16">
+              <button
+                onClick={() => router.back()}
+                className="px-4 py-2 text-sm text-gray-600 transition-colors border rounded sm:px-6 sm:text-base hover:bg-gray-100"
+              >
+                목록으로
+              </button>
             </div>
           </div>
-        </div>
-
-        <div className="w-[1260px] h-[1px] bg-[#B5B5B5]"></div>
+        </main>
       </div>
-
-      <main className="flex flex-col items-center w-full">
-        <div className="w-[1260px] p-6">
-          <div
-            className="prose max-w-none"
-            dangerouslySetInnerHTML={{
-              __html: post.content.replace(
-                /blob:http:\/\/localhost:3000\/[a-z0-9-]+/g,
-                (match, offset) => {
-                  const imageIndex =
-                    post.content
-                      .slice(0, offset)
-                      .match(/blob:http:\/\/localhost:3000\/[a-z0-9-]+/g)
-                      ?.length || 0;
-                  return `${post.postImageApiUrlPrefix}${post.postImages[imageIndex]}`;
-                }
-              ),
-            }}
-          />
-        </div>
-
-        {/* 좋아요 */}
-        <div className="w-[1260px] flex justify-center mt-12">
-          <button
-            className="flex items-center gap-3 transition-colors hover:opacity-80"
-            onClick={handleLikeToggle}
-          >
-            <img
-              src={
-                isLiked ? "/assets/post-like.png" : "/assets/post-unlike.png"
-              }
-              alt={isLiked ? "좋아요 취소" : "좋아요"}
-              className="w-7 h-7"
-            />
-            <span className="text-[20px]">{likeCount}</span>
-          </button>
-        </div>
-
-        {/* 수평선 추가 */}
-        <div className="w-[1260px] h-[1px] bg-[#B5B5B5] my-8"></div>
-
-        {/* 작성자 전용 버튼 */}
-        {userInfo?.nickname === post.creator && (
-          <div className="w-[1260px] flex justify-end space-x-4 mt-4">
-            <button
-              onClick={() => router.push(`/community/post/edit/${post.postId}`)}
-              className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
-            >
-              수정
-            </button>
-            <button
-              onClick={handleDelete}
-              className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
-            >
-              삭제
-            </button>
-          </div>
-        )}
-
-        {/* 돌아가기 버튼 */}
-        <div className="w-[1260px] flex justify-center mb-40">
-          <button
-            onClick={() => router.back()}
-            className="px-6 py-2 text-gray-600 border rounded hover:bg-gray-100"
-          >
-            목록으로
-          </button>
-        </div>
-      </main>
 
       <Footer />
 
+      {/* 모달 컴포넌트들 */}
       <Modal
         isOpen={modalConfig.isOpen}
         onClose={modalConfig.onClose}
         message={modalConfig.message}
       />
-
       <Modal
         isOpen={likeModalConfig.isOpen}
         onClose={likeModalConfig.onClose}
         message={likeModalConfig.message}
+      />
+      <Modal
+        isOpen={showLoginModal}
+        onClose={() => {
+          setShowLoginModal(false);
+          router.push("/auth");
+        }}
+        message="로그인을 먼저 진행해주세요!"
       />
     </div>
   );

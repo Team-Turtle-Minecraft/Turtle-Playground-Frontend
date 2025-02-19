@@ -160,7 +160,7 @@ export default function PostRankingPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-center hidden w-full max-w-md gap-4 mx-auto mb-4 sm:mb-0 lg:flex">
+              <div className="flex items-center justify-center w-full max-w-md gap-4 mx-auto mb-4 sm:mb-0 lg:flex">
                 <div className="flex flex-col items-center justify-center w-full gap-2 sm:flex-row sm:gap-4">
                   <img
                     src={`https://api.creepernation.net/avatar/${post.creator}`}

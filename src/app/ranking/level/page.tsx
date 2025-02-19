@@ -62,6 +62,22 @@ export default function LevelRankingPage() {
     setSelectedJob(jobsByCategory[category][0]);
   };
 
+  const calculateRank = (
+    index: number,
+    players: LevelRankingResponse["rankers"]
+  ) => {
+    if (index === 0) return 1;
+
+    const currentLevel = players[index].level;
+    const previousLevel = players[index - 1].level;
+
+    if (currentLevel === previousLevel) {
+      return calculateRank(index - 1, players);
+    }
+
+    return index + 1;
+  };
+
   if (isLoading) {
     return <LevelRankingSkeletonLoading />;
   }
@@ -133,7 +149,7 @@ export default function LevelRankingPage() {
                     className="grid items-center grid-cols-3 py-4 text-center transition-colors sm:py-6 hover:bg-gray-50"
                   >
                     <div className="text-lg font-bold sm:text-xl md:text-2xl">
-                      {index + 1}
+                      {calculateRank(index, rankingData.rankers)}
                     </div>
                     <div className="flex flex-col items-center justify-center w-full max-w-md gap-2 mx-auto sm:flex-row sm:gap-4">
                       <img

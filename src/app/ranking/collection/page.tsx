@@ -41,6 +41,22 @@ export default function CollectionRankingPage() {
     fetchRankingData();
   }, []);
 
+  const calculateRank = (
+    index: number,
+    players: CollectionRankingResponse["collectionRankers"]
+  ) => {
+    if (index === 0) return 1;
+
+    const currentProgress = players[index].progress;
+    const previousProgress = players[index - 1].progress;
+
+    if (currentProgress === previousProgress) {
+      return calculateRank(index - 1, players);
+    }
+
+    return index + 1;
+  };
+
   if (isLoading) {
     return <CollectionRankingSkeletonLoading />;
   }
@@ -63,7 +79,7 @@ export default function CollectionRankingPage() {
                 className="grid items-center grid-cols-3 py-4 text-center transition-colors sm:py-6 hover:bg-gray-50"
               >
                 <div className="text-lg font-bold sm:text-xl md:text-2xl">
-                  {index + 1}
+                  {calculateRank(index, rankingData.collectionRankers)}
                 </div>
                 <div className="flex flex-col items-center justify-center w-full max-w-md gap-2 mx-auto sm:flex-row sm:gap-4">
                   <img

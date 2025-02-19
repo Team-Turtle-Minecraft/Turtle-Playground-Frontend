@@ -18,6 +18,22 @@ export default function MoneyRankingPage() {
   const [error, setError] = useState<string | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
+  const calculateRank = (
+    index: number,
+    rankers: MoneyRankingResponse["moneyRankers"]
+  ) => {
+    if (index === 0) return 1;
+
+    const currentMoney = rankers[index].money;
+    const previousMoney = rankers[index - 1].money;
+
+    if (currentMoney === previousMoney) {
+      return calculateRank(index - 1, rankers);
+    }
+
+    return index + 1;
+  };
+
   const fetchRankingData = async () => {
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
@@ -62,7 +78,7 @@ export default function MoneyRankingPage() {
                 className="grid items-center grid-cols-2 py-4 text-center transition-colors sm:py-6 hover:bg-gray-50"
               >
                 <div className="text-lg font-bold sm:text-xl md:text-2xl">
-                  {index + 1}
+                  {calculateRank(index, rankingData.moneyRankers)}
                 </div>
                 <div className="flex flex-col items-center justify-center w-full max-w-md gap-2 mx-auto sm:flex-row sm:gap-4">
                   <img

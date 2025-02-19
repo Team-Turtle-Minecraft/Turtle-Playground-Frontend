@@ -171,7 +171,7 @@ export default function CommunityPage() {
       <div className="relative w-full">
         <div className="flex justify-center h-48 sm:h-64 md:h-80 lg:h-[310px] bg-gray-200 overflow-hidden">
           <img
-            src="/assets/turtle-playground-banner.png"
+            src="/assets/turtle-playground-banner02.png"
             alt="커뮤니티 배너"
             className="object-contain w-full h-full"
           />

@@ -14,8 +14,9 @@ export default function StorySystem() {
     const preloadImages = async () => {
       const images = [
         "/assets/story-01.png",
-        "/assets/story-system-2.png",
-        "/assets/story-03.gif",
+        "/assets/story-02.png",
+        "/assets/story-03.png",
+        "/assets/story-04.gif",
       ];
 
       try {
@@ -65,8 +66,9 @@ export default function StorySystem() {
               koreanTitle="스토리 시스템"
               images={[
                 "/assets/story-01.png",
-                "/assets/story-system-2.png",
-                "/assets/story-03.gif",
+                "/assets/story-02.png",
+                "/assets/story-03.png",
+                "/assets/story-04.gif",
               ]}
               mainTitle={
                 <>

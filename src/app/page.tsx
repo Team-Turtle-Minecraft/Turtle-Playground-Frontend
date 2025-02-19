@@ -5,9 +5,11 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Image from "next/image";
 import HomeSkeletonLoading from "@/components/skeleton/HomeSkeletonLoading";
+import { getUserCount } from "@/apis/api/getUserCount";
 
 export default function HomePage() {
   const [loading, setLoading] = useState(true);
+  const [userCount, setUserCount] = useState<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const discordRef = useRef<HTMLDivElement>(null);
 
@@ -44,6 +46,19 @@ export default function HomePage() {
     };
 
     preloadImages();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserCount = async () => {
+      try {
+        const response = await getUserCount();
+        setUserCount(response.countOfUsers);
+      } catch (error) {
+        console.error("Failed to fetch user count:", error);
+      }
+    };
+
+    fetchUserCount();
   }, []);
 
   const scrollToContent = () => {
@@ -166,15 +181,25 @@ export default function HomePage() {
             <p className="mb-4 text-sm md:text-base md:mb-8">
               공식 디스코드 서버에 참가하여 게임을 즐겨보세요!
             </p>
-            <div className="relative w-full max-w-[300px] md:max-w-[400px] lg:max-w-[600px] aspect-[2/1] mx-auto">
-              <Image
-                src="/assets/turtle-playground-discord.png"
-                alt="Discord"
-                fill
-                sizes="(max-width: 768px) 300px, (max-width: 1024px) 400px, 600px"
-                className="object-contain cursor-pointer hover:opacity-90"
-                onClick={() => window.open("https://discord.gg/gGyvdHzu")}
-              />
+            <div className="relative">
+              <div className="inline-block p-2 mt-4 bg-gray-100 rounded-lg">
+                <p className="text-sm font-medium md:text-base">
+                  현재 참여 인원:{" "}
+                  <span className="font-bold text-blue-600">
+                    {userCount !== null ? `${userCount} / 50` : "로딩 중..."}
+                  </span>
+                </p>
+              </div>
+              <div className="relative w-full max-w-[300px] md:max-w-[400px] lg:max-w-[600px] aspect-[2/1] mx-auto">
+                <Image
+                  src="/assets/turtle-playground-discord.png"
+                  alt="Discord"
+                  fill
+                  sizes="(max-width: 768px) 300px, (max-width: 1024px) 400px, 600px"
+                  className="object-contain cursor-pointer hover:opacity-90 md:-translate-x-10"
+                  onClick={() => window.open("https://discord.gg/gGyvdHzu")}
+                />
+              </div>
             </div>
           </div>
         </section>

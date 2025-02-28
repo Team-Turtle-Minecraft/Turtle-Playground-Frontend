@@ -194,7 +194,7 @@ export default function PostDetailPage() {
                   <div className="flex flex-wrap items-center gap-3 text-sm sm:gap-6 sm:text-base">
                     <div className="flex items-center gap-1 sm:gap-2">
                       <img
-                        src="/assets/post-createdAt.png"
+                        src={`${process.env.ASSET_PREFIX}/front/assets/post-createdAt.png`}
                         alt="작성시간"
                         className="w-4 h-4 sm:w-5 sm:h-5"
                       />
@@ -211,7 +211,7 @@ export default function PostDetailPage() {
                     </div>
                     <div className="flex items-center gap-1 sm:gap-2">
                       <img
-                        src="/assets/post-views.png"
+                        src={`${process.env.ASSET_PREFIX}/front/assets/post-views.png`}
                         alt="조회수"
                         className="w-4 h-4 sm:w-5 sm:h-5"
                       />

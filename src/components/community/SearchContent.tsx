@@ -171,7 +171,7 @@ export default function SearchContent() {
                     <div className="flex items-center justify-between mt-auto text-xs text-gray-500 sm:text-sm">
                       <div className="flex items-center gap-1 sm:gap-2">
                         <img
-                          src="/assets/post-createdAt.png"
+                          src={`${process.env.ASSET_PREFIX}/front/assets/post-createdAt.png`}
                           alt="작성시간"
                           className="w-3 h-3 sm:w-4 sm:h-4"
                         />
@@ -183,7 +183,7 @@ export default function SearchContent() {
                       <div className="flex gap-2 sm:gap-4">
                         <div className="flex items-center gap-1">
                           <img
-                            src="/assets/post-like.png"
+                            src={`${process.env.ASSET_PREFIX}/front/assets/post-like.png`}
                             alt="좋아요"
                             className="w-3 h-3 sm:w-4 sm:h-4"
                           />
@@ -191,7 +191,7 @@ export default function SearchContent() {
                         </div>
                         <div className="flex items-center gap-1">
                           <img
-                            src="/assets/post-views.png"
+                            src={`${process.env.ASSET_PREFIX}/front/assets/post-views.png`}
                             alt="조회수"
                             className="w-3 h-3 sm:w-4 sm:h-4"
                           />

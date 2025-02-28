@@ -16,12 +16,12 @@ export default function HomePage() {
   useEffect(() => {
     const preloadImages = async () => {
       const images = [
-        "/assets/turtle-playground-banner.png",
-        "/assets/story-thumbnail.png",
-        "/assets/content/achievement.png",
-        "/assets/combat-thumbnail.png",
-        "/assets/content/living.png",
-        "/assets/turtle-playground-discord.png",
+        `${process.env.ASSET_PREFIX}/front/assets/turtle-playground-banner.png`,
+        `${process.env.ASSET_PREFIX}/front/assets/story-thumbnail.png`,
+        `${process.env.ASSET_PREFIX}/front/assets/content/achievement.png`,
+        `${process.env.ASSET_PREFIX}/front/assets/combat-thumbnail.png`,
+        `${process.env.ASSET_PREFIX}/front/assets/content/living.png`,
+        `${process.env.ASSET_PREFIX}/front/assets/turtle-playground-discord.png`,
       ];
 
       try {
@@ -84,7 +84,7 @@ export default function HomePage() {
         <section className="relative w-full h-[300px] md:h-[450px] lg:h-[651px]">
           <div className="relative w-full h-full">
             <Image
-              src="/assets/turtle-playground-banner02.png"
+              src={`${process.env.ASSET_PREFIX}/front/assets/turtle-playground-banner02.png`}
               alt="거북이 놀이터 배너"
               fill
               sizes="100vw"
@@ -121,25 +121,25 @@ export default function HomePage() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:gap-8">
             {[
               {
-                src: "/assets/story-thumbnail.png",
+                src: `${process.env.ASSET_PREFIX}/front/assets/story-thumbnail.png`,
                 alt: "스토리 시스템",
                 title: "컨텐츠 소개 - 스토리",
                 href: "/contents/story-system",
               },
               {
-                src: "/assets/achievement-thumbnail.png",
+                src: `${process.env.ASSET_PREFIX}/front/assets/achievement-thumbnail.png`,
                 alt: "도전과제 시스템",
                 title: "컨텐츠 소개 - 도전과제",
                 href: "/contents/achievement-system",
               },
               {
-                src: "/assets/combat-thumbnail.png",
+                src: `${process.env.ASSET_PREFIX}/front/assets/combat-thumbnail.png`,
                 alt: "전투 시스템",
                 title: "컨텐츠 소개 - 전투",
                 href: "/contents/combat-system",
               },
               {
-                src: "/assets/living-thumbnail.png",
+                src: `${process.env.ASSET_PREFIX}/front/assets/living-thumbnail.png`,
                 alt: "생활 시스템",
                 title: "컨텐츠 소개 - 생활",
                 href: "/contents/living-system",
@@ -192,12 +192,12 @@ export default function HomePage() {
               </div>
               <div className="relative w-full max-w-[300px] md:max-w-[400px] lg:max-w-[600px] aspect-[2/1] mx-auto">
                 <Image
-                  src="/assets/turtle-playground-discord.png"
+                  src={`${process.env.ASSET_PREFIX}/front/assets/turtle-playground-discord.png`}
                   alt="Discord"
                   fill
                   sizes="(max-width: 768px) 300px, (max-width: 1024px) 400px, 600px"
                   className="object-contain cursor-pointer hover:opacity-90 md:-translate-x-10"
-                  onClick={() => window.open("https://discord.gg/gGyvdHzu")}
+                  onClick={() => window.open("https://discord.gg/dF2zb62J")}
                 />
               </div>
             </div>

@@ -14,9 +14,14 @@ export default function LivingSystem() {
   useEffect(() => {
     const preloadImages = async () => {
       const images = [
-        "/assets/gathering1.gif",
-        "/assets/living-system-2.png",
-        "/assets/living-system-3.png",
+        `${process.env.ASSET_PREFIX}/front/assets/living-01.gif`,
+        `${process.env.ASSET_PREFIX}/front/assets/living-02.gif`,
+        `${process.env.ASSET_PREFIX}/front/assets/living-03.gif`,
+        `${process.env.ASSET_PREFIX}/front/assets/living-04.gif`,
+        `${process.env.ASSET_PREFIX}/front/assets/living-05.gif`,
+        `${process.env.ASSET_PREFIX}/front/assets/living-06.gif`,
+        `${process.env.ASSET_PREFIX}/front/assets/living-07.gif`,
+        `${process.env.ASSET_PREFIX}/front/assets/living-08.png`,
       ];
 
       try {
@@ -63,14 +68,14 @@ export default function LivingSystem() {
               title="Living System"
               koreanTitle="생활 시스템"
               images={[
-                "/assets/living-01.gif",
-                "/assets/living-02.gif",
-                "/assets/living-03.gif",
-                "/assets/living-04.gif",
-                "/assets/living-05.gif",
-                "/assets/living-06.gif",
-                "/assets/living-07.gif",
-                "/assets/living-08.png",
+                `${process.env.ASSET_PREFIX}/front/assets/living-01.gif`,
+                `${process.env.ASSET_PREFIX}/front/assets/living-02.gif`,
+                `${process.env.ASSET_PREFIX}/front/assets/living-03.gif`,
+                `${process.env.ASSET_PREFIX}/front/assets/living-04.gif`,
+                `${process.env.ASSET_PREFIX}/front/assets/living-05.gif`,
+                `${process.env.ASSET_PREFIX}/front/assets/living-06.gif`,
+                `${process.env.ASSET_PREFIX}/front/assets/living-07.gif`,
+                `${process.env.ASSET_PREFIX}/front/assets/living-08.png`,
               ]}
               imageDescriptions={[
                 "사진1 - 농부(생활직업) 식물 수확1",

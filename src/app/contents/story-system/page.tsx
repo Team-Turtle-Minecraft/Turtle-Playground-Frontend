@@ -13,10 +13,10 @@ export default function StorySystem() {
   useEffect(() => {
     const preloadImages = async () => {
       const images = [
-        "/assets/story-01.png",
-        "/assets/story-02.png",
-        "/assets/story-03.png",
-        "/assets/story-04.gif",
+        `${process.env.ASSET_PREFIX}/front/assets/story-01.png`,
+        `${process.env.ASSET_PREFIX}/front/assets/story-02.png`,
+        `${process.env.ASSET_PREFIX}/front/assets/story-03.png`,
+        `${process.env.ASSET_PREFIX}/front/assets/story-04.gif`,
       ];
 
       try {
@@ -65,10 +65,10 @@ export default function StorySystem() {
               title="Story System"
               koreanTitle="스토리 시스템"
               images={[
-                "/assets/story-01.png",
-                "/assets/story-02.png",
-                "/assets/story-03.png",
-                "/assets/story-04.gif",
+                `${process.env.ASSET_PREFIX}/front/assets/story-01.png`,
+                `${process.env.ASSET_PREFIX}/front/assets/story-02.png`,
+                `${process.env.ASSET_PREFIX}/front/assets/story-03.png`,
+                `${process.env.ASSET_PREFIX}/front/assets/story-04.gif`,
               ]}
               imageDescriptions={[
                 "사진1 - 깨어난 주인공",

@@ -14,10 +14,13 @@ export default function CombatSystem() {
   useEffect(() => {
     const preloadImages = async () => {
       const images = [
-        "/assets/combat-01.gif",
-        "/assets/combat-02.gif",
-        "/assets/combat-03.gif",
-        "/assets/combat-04.gif",
+        `${process.env.ASSET_PREFIX}/front/assets/combat-01.gif`,
+        `${process.env.ASSET_PREFIX}/front/assets/combat-02.gif`,
+        `${process.env.ASSET_PREFIX}/front/assets/combat-03.gif`,
+        `${process.env.ASSET_PREFIX}/front/assets/combat-04.gif`,
+        `${process.env.ASSET_PREFIX}/front/assets/combat-05.gif`,
+        `${process.env.ASSET_PREFIX}/front/assets/combat-06.gif`,
+        `${process.env.ASSET_PREFIX}/front/assets/combat-07.gif`,
       ];
 
       try {
@@ -64,13 +67,13 @@ export default function CombatSystem() {
               title="Combat System"
               koreanTitle="전투 시스템"
               images={[
-                "/assets/combat-01.gif",
-                "/assets/combat-02.gif",
-                "/assets/combat-03.gif",
-                "/assets/combat-04.gif",
-                "/assets/combat-05.gif",
-                "/assets/combat-06.gif",
-                "/assets/combat-07.gif",
+                `${process.env.ASSET_PREFIX}/front/assets/combat-01.gif`,
+                `${process.env.ASSET_PREFIX}/front/assets/combat-02.gif`,
+                `${process.env.ASSET_PREFIX}/front/assets/combat-03.gif`,
+                `${process.env.ASSET_PREFIX}/front/assets/combat-04.gif`,
+                `${process.env.ASSET_PREFIX}/front/assets/combat-05.gif`,
+                `${process.env.ASSET_PREFIX}/front/assets/combat-06.gif`,
+                `${process.env.ASSET_PREFIX}/front/assets/combat-07.gif`,
               ]}
               imageDescriptions={[
                 "사진1 - 기본 직업(전사) 스킬",

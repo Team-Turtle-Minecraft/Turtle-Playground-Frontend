@@ -14,10 +14,10 @@ export default function AchievementSystem() {
   useEffect(() => {
     const preloadImages = async () => {
       const images = [
-        "/assets/achievement-01.gif",
-        "/assets/achievement-02.gif",
-        "/assets/achievement-03.gif",
-        "/assets/achievement-04.gif",
+        `${process.env.ASSET_PREFIX}/front/assets/achievement-01.gif`,
+        `${process.env.ASSET_PREFIX}/front/assets/achievement-02.gif`,
+        `${process.env.ASSET_PREFIX}/front/assets/achievement-03.gif`,
+        `${process.env.ASSET_PREFIX}/front/assets/achievement-04.gif`,
       ];
 
       try {
@@ -64,10 +64,10 @@ export default function AchievementSystem() {
               title="Achievement System"
               koreanTitle="도전과제 시스템"
               images={[
-                "/assets/achievement-01.gif",
-                "/assets/achievement-02.gif",
-                "/assets/achievement-03.gif",
-                "/assets/achievement-04.gif",
+                `${process.env.ASSET_PREFIX}/front/assets/achievement-01.gif`,
+                `${process.env.ASSET_PREFIX}/front/assets/achievement-02.gif`,
+                `${process.env.ASSET_PREFIX}/front/assets/achievement-03.gif`,
+                `${process.env.ASSET_PREFIX}/front/assets/achievement-04.gif`,
               ]}
               imageDescriptions={[
                 "사진1 - 프롤로그 중 보라색 블럭과의 상호작용1",

@@ -15,7 +15,7 @@ export default function RankingLayout({ children }: RankingLayoutProps) {
       <div className="relative w-full">
         <div className="flex justify-center h-48 sm:h-64 md:h-80 lg:h-[310px] bg-gray-200 overflow-hidden">
           <img
-            src="/assets/turtle-playground-ranking-banner.png"
+            src={`${process.env.ASSET_PREFIX}/front/assets/turtle-playground-ranking-banner.png`}
             alt="랭킹 배너"
             className="object-contain w-full h-full"
           />

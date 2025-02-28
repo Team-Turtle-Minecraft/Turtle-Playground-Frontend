@@ -40,4 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-/public/assets
+/public/assets/*.gif
+/public/assets/*.png
+/public/assets/*.jpg

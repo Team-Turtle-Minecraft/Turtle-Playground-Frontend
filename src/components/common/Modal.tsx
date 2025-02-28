@@ -17,7 +17,7 @@ export default function Modal({ isOpen, onClose, message }: ModalProps) {
         <p className="mb-6 text-lg">{message}</p>
         <button
           onClick={onClose}
-          className="w-full px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+          className="w-full px-4 py-2 text-green-800 bg-green-100 rounded hover:bg-green-200"
         >
           확인
         </button>

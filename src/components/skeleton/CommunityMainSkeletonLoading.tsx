@@ -7,84 +7,126 @@ export default function CommunitySkeletonLoading() {
     <div className="flex flex-col min-h-screen">
       {/* 헤더 스켈레톤 */}
       <header className="bg-white">
-        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="items-center justify-between hidden h-24 lg:flex">
-            <div className="w-[200px]" />
-            <div className="flex items-center space-x-12">
+        <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-20 lg:h-24">
+            <div className="w-20 sm:w-[150px] lg:w-[200px]" />
+            <div className="items-center hidden space-x-8 lg:flex sm:space-x-12">
               <div className="flex flex-col items-center">
                 <div
-                  className={`w-[98px] h-[68px] rounded ${shimmerClass}`}
-                ></div>
-                <div className={`w-32 h-6 mt-1 rounded ${shimmerClass}`}></div>
+                  className={`w-16 sm:w-20 lg:w-[98px] h-12 sm:h-16 lg:h-[68px] rounded ${shimmerClass}`}
+                />
+                <div
+                  className={`w-24 sm:w-28 lg:w-32 h-4 sm:h-5 lg:h-6 mt-1 rounded ${shimmerClass}`}
+                />
               </div>
-              {/* 네비게이션 아이템들 */}
               {Array(3)
                 .fill(0)
                 .map((_, i) => (
                   <div
                     key={i}
-                    className={`w-24 h-8 rounded ${shimmerClass}`}
-                  ></div>
+                    className={`w-16 sm:w-20 lg:w-24 h-6 sm:h-7 lg:h-8 rounded ${shimmerClass}`}
+                  />
                 ))}
             </div>
-            <div className={`w-[200px] h-12 rounded ${shimmerClass}`}></div>
+            <div
+              className={`w-20 sm:w-[150px] lg:w-[200px] h-8 sm:h-10 lg:h-12 rounded ${shimmerClass}`}
+            />
           </div>
         </div>
       </header>
 
       {/* 배너 스켈레톤 */}
       <div className="relative">
-        <div className={`h-[310px] w-full ${shimmerClass}`}></div>
-        <div className="absolute flex items-center bottom-4 left-20">
+        <div
+          className={`h-48 sm:h-64 md:h-80 lg:h-[310px] w-full ${shimmerClass}`}
+        />
+        <div className="absolute flex items-center bottom-4 left-4 sm:left-8 md:left-12 lg:left-20">
           <div
-            className={`w-[68.44px] h-[60px] mr-4 rounded ${shimmerClass}`}
-          ></div>
-          <div className={`w-[200px] h-[50px] rounded ${shimmerClass}`}></div>
+            className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-[68px] lg:h-[60px] mr-2 sm:mr-3 md:mr-4 rounded ${shimmerClass}`}
+          />
+          <div
+            className={`w-32 sm:w-40 md:w-48 lg:w-[200px] h-8 sm:h-10 md:h-12 lg:h-[50px] rounded ${shimmerClass}`}
+          />
         </div>
       </div>
 
       {/* 메인 콘텐츠 스켈레톤 */}
-      <main className="container flex-grow px-4 py-8 mx-auto">
+      <main className="flex-grow px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8 sm:py-6 lg:py-8">
         {/* 필터 및 검색 영역 */}
-        <div className="flex justify-between mb-6">
-          <div className="flex space-x-4">
-            <div className={`w-28 h-10 rounded ${shimmerClass}`}></div>
-            <div className={`w-28 h-10 rounded ${shimmerClass}`}></div>
+        <div className="flex flex-col justify-between gap-4 mb-4 sm:flex-row sm:mb-6">
+          <div className="flex flex-wrap gap-2 sm:gap-4">
+            <div className={`w-full sm:w-28 h-10 rounded ${shimmerClass}`} />
+            <div className={`w-full sm:w-28 h-10 rounded ${shimmerClass}`} />
           </div>
-          <div className="flex">
-            <div className={`w-64 h-10 rounded-l ${shimmerClass}`}></div>
-            <div className={`w-20 h-10 rounded-r ${shimmerClass}`}></div>
+          <div className="flex w-full sm:w-auto">
+            <div className={`flex-1 sm:w-64 h-10 rounded-l ${shimmerClass}`} />
+            <div className={`w-16 sm:w-20 h-10 rounded-r ${shimmerClass}`} />
           </div>
         </div>
 
-        {/* 게시물 그리드 */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {/* 게시물 그리드 스켈레톤 */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {Array(8)
             .fill(0)
             .map((_, i) => (
-              <div key={i} className="overflow-hidden border rounded-lg">
+              <div
+                key={i}
+                className="flex flex-col w-full mx-auto overflow-hidden border rounded-lg sm:w-64 lg:w-72"
+              >
                 {/* 이미지 영역 */}
-                <div className={`aspect-w-16 aspect-h-9 ${shimmerClass}`}></div>
+                <div className={`relative pt-[65%] ${shimmerClass}`} />
+
                 {/* 구분선 */}
-                <div className="w-full h-[1px] bg-gray-200"></div>
+                <div className="w-full h-px bg-gray-200" />
+
                 {/* 콘텐츠 영역 */}
-                <div className="flex flex-col flex-grow p-4">
+                <div className="h-40 p-3 space-y-3 sm:p-4">
                   {/* 카테고리 태그 */}
                   <div
-                    className={`w-16 h-6 mb-2 rounded ${shimmerClass}`}
-                  ></div>
-                  {/* 제목 */}
-                  <div
-                    className={`w-full h-6 mb-2 rounded ${shimmerClass}`}
-                  ></div>
+                    className={`w-16 sm:w-20 h-5 sm:h-6 rounded ${shimmerClass}`}
+                  />
+
+                  {/* 제목 (2줄) */}
+                  <div className="space-y-2">
+                    <div
+                      className={`w-full h-5 sm:h-6 rounded ${shimmerClass}`}
+                    />
+                    <div
+                      className={`w-4/5 h-5 sm:h-6 rounded ${shimmerClass}`}
+                    />
+                  </div>
+
                   {/* 작성자 */}
-                  <div className={`w-24 h-4 rounded ${shimmerClass}`}></div>
-                  {/* 하단 정보 */}
-                  <div className="flex items-center justify-between mt-8">
-                    <div className={`w-24 h-4 rounded ${shimmerClass}`}></div>
-                    <div className="flex gap-4">
-                      <div className={`w-12 h-4 rounded ${shimmerClass}`}></div>
-                      <div className={`w-12 h-4 rounded ${shimmerClass}`}></div>
+                  <div
+                    className={`w-24 sm:w-28 h-4 sm:h-5 rounded ${shimmerClass}`}
+                  />
+
+                  {/* 하단 메타 정보 */}
+                  <div className="flex items-center justify-between pt-2">
+                    {/* 날짜 */}
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <div
+                        className={`w-3 h-3 sm:w-4 sm:h-4 rounded ${shimmerClass}`}
+                      />
+                      <div
+                        className={`w-20 sm:w-24 h-4 rounded ${shimmerClass}`}
+                      />
+                    </div>
+
+                    {/* 좋아요/조회수 */}
+                    <div className="flex gap-2 sm:gap-4">
+                      <div className="flex items-center gap-1">
+                        <div
+                          className={`w-3 h-3 sm:w-4 sm:h-4 rounded ${shimmerClass}`}
+                        />
+                        <div className={`w-8 h-4 rounded ${shimmerClass}`} />
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div
+                          className={`w-3 h-3 sm:w-4 sm:h-4 rounded ${shimmerClass}`}
+                        />
+                        <div className={`w-8 h-4 rounded ${shimmerClass}`} />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -92,35 +134,35 @@ export default function CommunitySkeletonLoading() {
             ))}
         </div>
 
-        {/* 글쓰기 버튼 */}
-        <div className="flex justify-end mt-6">
-          <div className={`w-24 h-10 rounded ${shimmerClass}`}></div>
+        {/* 글쓰기 버튼 스켈레톤 */}
+        <div className="flex justify-end mt-4 sm:mt-6">
+          <div className={`w-20 sm:w-24 h-8 sm:h-10 rounded ${shimmerClass}`} />
         </div>
 
-        {/* 페이지네이션 */}
-        <div className="flex justify-center mt-8 space-x-2">
+        {/* 페이지네이션 스켈레톤 */}
+        <div className="flex justify-center mt-6 space-x-2 sm:mt-8">
           {Array(5)
             .fill(0)
             .map((_, i) => (
               <div
                 key={i}
-                className={`w-10 h-10 rounded ${shimmerClass}`}
-              ></div>
+                className={`w-8 sm:w-10 h-8 sm:h-10 rounded ${shimmerClass}`}
+              />
             ))}
         </div>
       </main>
 
       {/* 푸터 스켈레톤 */}
-      <footer className="py-6 bg-gray-800">
-        <div className="container px-6 mx-auto">
-          <div className="space-y-2">
+      <footer className="py-4 bg-gray-800 sm:py-6">
+        <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <div className="space-y-2 sm:space-y-3">
             {Array(4)
               .fill(0)
               .map((_, i) => (
                 <div
                   key={i}
-                  className={`w-64 h-4 rounded ${shimmerClass}`}
-                ></div>
+                  className={`w-48 sm:w-56 lg:w-64 h-3 sm:h-4 rounded ${shimmerClass}`}
+                />
               ))}
           </div>
         </div>

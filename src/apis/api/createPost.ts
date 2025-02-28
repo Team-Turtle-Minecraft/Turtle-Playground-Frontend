@@ -3,7 +3,7 @@ import { refreshToken } from "./refreshToken";
 
 export const createPost = async (formData: FormData): Promise<void> => {
   try {
-    let accessToken = localStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
       window.location.href = "/auth";
       return;

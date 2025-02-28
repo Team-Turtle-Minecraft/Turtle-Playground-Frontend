@@ -4,7 +4,7 @@ export const BOSS_MAPPING: Record<string, string> = {
   "고대의 기계 에르지옥스": "ergeox",
   "심연의 기사": "abyssal_knight",
   "타락한 기사": "knight_fallen",
-  "지루한 연금술사": "boring_alchemist",
+  마녀: "boring_alchemist",
   "시체의 군주": "corpse_lord",
   위더: "toro_wither",
 

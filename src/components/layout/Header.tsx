@@ -131,7 +131,7 @@ export default function Header() {
               onClick={() => (window.location.href = "/")}
             >
               <img
-                src="/assets/turtle-playground-logo.png"
+                src={`${process.env.ASSET_PREFIX}/front/assets/turtle-playground-logo.png`}
                 alt="거북이 놀이터"
                 className="w-[98px] h-[68px] object-contain"
               />

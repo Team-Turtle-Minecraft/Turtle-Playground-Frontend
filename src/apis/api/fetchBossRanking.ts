@@ -3,6 +3,12 @@
 import { BossClearType, BossRankingResponse } from "@/types/bossRanking";
 import { refreshToken } from "./refreshToken";
 
+interface BossRankingError {
+  status: number;
+  errorCode: string;
+  message: string;
+}
+
 export const getBossRanking = async (
   bossClearType: BossClearType,
   bossName: string
@@ -17,22 +23,28 @@ export const getBossRanking = async (
       }
     );
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw { status: response.status, ...error };
+    const responseData = await response.json();
+
+    // 기록이 없는 경우는 정상적인 상황으로 처리
+    if (
+      !response.ok &&
+      responseData.errorCode !== "FirstSoloBossClearLogNotFoundError" &&
+      responseData.errorCode !== "FirstPartyBossClearLogNotFoundError"
+    ) {
+      throw { status: response.status, ...responseData } as BossRankingError;
     }
 
-    return response.json();
+    return responseData;
   };
 
   try {
-    let accessToken = localStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) throw new Error("No access token");
 
     try {
       return await makeRequest(accessToken);
-    } catch (error: any) {
-      if (error.errorCode === "ExpiredAccessTokenError") {
+    } catch (error) {
+      if ((error as BossRankingError).errorCode === "ExpiredAccessTokenError") {
         const newToken = await refreshToken();
         if (!newToken) throw new Error("Token refresh failed");
         return await makeRequest(newToken);
@@ -40,7 +52,13 @@ export const getBossRanking = async (
       throw error;
     }
   } catch (error) {
-    console.error("보스 랭킹 조회 실패:", error);
+    const err = error as BossRankingError;
+    if (
+      err.errorCode !== "FirstSoloBossClearLogNotFoundError" &&
+      err.errorCode !== "FirstPartyBossClearLogNotFoundError"
+    ) {
+      console.error("보스 랭킹 조회 실패:", error);
+    }
     throw error;
   }
 };

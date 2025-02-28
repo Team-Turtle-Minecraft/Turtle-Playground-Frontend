@@ -7,7 +7,7 @@ export const fetchCommunityPosts = async ({
   page = 1,
 }: FetchPostsParams): Promise<PostResponse | null> => {
   try {
-    let accessToken = localStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem("accessToken");
 
     if (!accessToken) {
       window.location.href = "/auth";

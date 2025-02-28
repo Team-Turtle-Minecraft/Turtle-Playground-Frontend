@@ -23,7 +23,7 @@ export const getCollectionRanking =
     };
 
     try {
-      let accessToken = localStorage.getItem("accessToken");
+      const accessToken = localStorage.getItem("accessToken");
       if (!accessToken) throw new Error("No access token");
 
       try {

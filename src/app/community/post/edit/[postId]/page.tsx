@@ -1,5 +1,11 @@
-import EditPostPage from "@/components/post/PostEditPage";
+// src/app/community/post/edit/[postId]/page.tsx
+"use client";
 
-export default function Page({ params }: { params: { postId: string } }) {
-  return <EditPostPage />;
+import EditPostPage from "@/components/community/PostEditPage";
+import { useParams } from "next/navigation";
+
+export default function Page() {
+  const params = useParams();
+
+  return <EditPostPage postId={params.postId as string} />;
 }

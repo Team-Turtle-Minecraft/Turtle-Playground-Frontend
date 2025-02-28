@@ -246,14 +246,24 @@ export default function PostDetailPage() {
                 className="prose max-w-none prose-img:mx-auto prose-img:my-4"
                 dangerouslySetInnerHTML={{
                   __html: post.content.replace(
-                    /blob:http:\/\/localhost:3000\/[a-z0-9-]+/g,
-                    (match, offset) => {
+                    /blob:(https?:\/\/[^\/]+)\/([a-z0-9-]+)/g,
+                    (match, domain, blobId, offset) => {
                       const imageIndex =
                         post.content
                           .slice(0, offset)
-                          .match(/blob:http:\/\/localhost:3000\/[a-z0-9-]+/g)
+                          .match(/blob:(https?:\/\/[^\/]+)\/([a-z0-9-]+)/g)
                           ?.length || 0;
-                      return `${post.postImageApiUrlPrefix}${post.postImages[imageIndex]}`;
+
+                      // 이미지 배열에 해당 인덱스가 있는지 확인
+                      if (imageIndex < post.postImages.length) {
+                        return `${post.postImageApiUrlPrefix}${post.postImages[imageIndex]}`;
+                      }
+
+                      // 인덱스가 범위를 벗어나면 원래 URL 반환 (에러 방지)
+                      console.warn(
+                        `이미지 인덱스 범위 초과: ${imageIndex}, 사용 가능한 이미지: ${post.postImages.length}`
+                      );
+                      return match;
                     }
                   ),
                 }}

@@ -22,7 +22,7 @@ export const getMoneyRanking = async (): Promise<MoneyRankingResponse> => {
   };
 
   try {
-    let accessToken = localStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) throw new Error("No access token");
 
     try {

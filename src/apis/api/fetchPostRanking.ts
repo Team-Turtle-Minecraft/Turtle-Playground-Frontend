@@ -4,7 +4,7 @@ import { PostRankingResponse } from "@/types/postRanking";
 
 export const fetchPostRanking = async (): Promise<PostRankingResponse> => {
   try {
-    let accessToken = localStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
       window.location.href = "/auth";
       return Promise.reject("No access token");

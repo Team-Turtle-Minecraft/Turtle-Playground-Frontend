@@ -19,7 +19,7 @@ export const increasePostViews = async (postId: string): Promise<void> => {
   };
 
   try {
-    let accessToken = localStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) throw new Error("No access token");
 
     try {

@@ -69,11 +69,11 @@ export default function DashboardHeader() {
   ];
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 bg-white">
+    <header className="flex items-center justify-between px-4 py-3 bg-white md:px-6 md:py-4">
       {/* 좌측: 햄버거 메뉴와 홈 버튼 */}
       <div className="flex items-center space-x-1">
         <div
-          className="relative w-8 h-8 cursor-pointer"
+          className="relative w-6 h-6 cursor-pointer md:w-8 md:h-8"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           <Image
@@ -83,7 +83,7 @@ export default function DashboardHeader() {
             className="object-contain"
           />
         </div>
-        <Link href="/" className="relative w-8 h-8 -ml-1">
+        <Link href="/" className="relative w-6 h-6 -ml-1 md:w-8 md:h-8">
           <Image
             src="/assets/homeButton.png"
             alt="홈"
@@ -92,6 +92,30 @@ export default function DashboardHeader() {
           />
         </Link>
       </div>
+
+      {/* 중앙: 로고 */}
+      <div
+        className="flex flex-col items-center cursor-pointer"
+        onClick={() => (window.location.href = "/")}
+      >
+        <div className="w-[60px] h-[42px] md:w-[98px] md:h-[68px] relative">
+          <Image
+            src="/assets/turtle-playground-logo.png"
+            alt="거북이 놀이터"
+            fill
+            className="object-contain"
+          />
+        </div>
+        <span className="text-sm md:text-[20px] mt-1">거북이 놀이터</span>
+      </div>
+
+      {/* 우측: 로그아웃 버튼 */}
+      <button
+        onClick={handleLogout}
+        className="px-3 py-1.5 text-sm md:px-4 md:py-2 md:text-base text-white bg-gray-800 rounded hover:bg-gray-700"
+      >
+        로그아웃
+      </button>
 
       {/* 사이드 메뉴 */}
       <div
@@ -119,7 +143,9 @@ export default function DashboardHeader() {
               >
                 <span>커뮤니티</span>
                 <span
-                  className={`transform transition-transform duration-200 ${activeCategory === "community" ? "rotate-180" : ""}`}
+                  className={`transform transition-transform duration-200 ${
+                    activeCategory === "community" ? "rotate-180" : ""
+                  }`}
                 >
                   ▼
                 </span>
@@ -157,7 +183,9 @@ export default function DashboardHeader() {
               >
                 <span>랭킹</span>
                 <span
-                  className={`transform transition-transform duration-200 ${activeCategory === "ranking" ? "rotate-180" : ""}`}
+                  className={`transform transition-transform duration-200 ${
+                    activeCategory === "ranking" ? "rotate-180" : ""
+                  }`}
                 >
                   ▼
                 </span>
@@ -181,30 +209,6 @@ export default function DashboardHeader() {
           </div>
         </div>
       </div>
-
-      {/* 중앙: 로고 */}
-      <div
-        className="flex flex-col items-center cursor-pointer"
-        onClick={() => (window.location.href = "/")}
-      >
-        <div className="w-[98px] h-[68px] relative">
-          <Image
-            src="/assets/turtle-playground-logo.png"
-            alt="거북이 놀이터"
-            fill
-            className="object-contain"
-          />
-        </div>
-        <span className="text-[20px] mt-1">거북이 놀이터</span>
-      </div>
-
-      {/* 우측: 로그아웃 버튼 */}
-      <button
-        onClick={handleLogout}
-        className="px-4 py-2 text-white bg-gray-800 rounded hover:bg-gray-700"
-      >
-        로그아웃
-      </button>
 
       {/* 로그아웃 완료 모달 */}
       <Modal

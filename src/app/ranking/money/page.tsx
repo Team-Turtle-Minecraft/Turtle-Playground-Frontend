@@ -2,20 +2,46 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import RankingLayout from "@/components/ranking/RankingLayout";
 import { MoneyRankingResponse } from "@/types/moneyRanking";
 import { getMoneyRanking } from "@/apis/api/fetchMoneyRanking";
 import { MoneyRankingSkeletonLoading } from "@/components/skeleton/MoneyRankingSkeletonLoading";
+import Modal from "@/components/common/Modal";
 
 export default function MoneyRankingPage() {
+  const router = useRouter();
   const [rankingData, setRankingData] = useState<MoneyRankingResponse | null>(
     null
   );
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const calculateRank = (
+    index: number,
+    rankers: MoneyRankingResponse["moneyRankers"]
+  ) => {
+    if (index === 0) return 1;
+
+    const currentMoney = rankers[index].money;
+    const previousMoney = rankers[index - 1].money;
+
+    if (currentMoney === previousMoney) {
+      return calculateRank(index - 1, rankers);
+    }
+
+    return index + 1;
+  };
 
   const fetchRankingData = async () => {
-    setIsLoading(true);
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      setShowLoginModal(true);
+      setIsLoading(false);
+      return;
+    }
+
     setError(null);
     try {
       const data = await getMoneyRanking();
@@ -36,68 +62,55 @@ export default function MoneyRankingPage() {
     return <MoneyRankingSkeletonLoading />;
   }
 
-  if (error) {
-    return (
-      <RankingLayout>
-        <div className="text-center text-red-600">{error}</div>
-      </RankingLayout>
-    );
-  }
-
   return (
     <RankingLayout>
-      {/* 랭킹 테이블 */}
       <div className="overflow-hidden rounded-lg shadow bg-gray-50">
-        {/* 테이블 헤더 */}
-        <div className="grid grid-cols-2 py-4 text-center bg-gray-100 border-b">
+        <div className="grid grid-cols-2 py-3 text-sm text-center bg-gray-100 border-b sm:py-4 sm:text-base">
           <div>순위</div>
           <div>캐릭터 정보</div>
         </div>
 
-        {/* 로딩 상태 */}
-        {isLoading ? (
-          <div className="py-20 text-center">
-            <div className="text-gray-500">랭킹 데이터를 불러오는 중...</div>
-          </div>
-        ) : (
-          <>
-            {/* 테이블 바디 */}
-            <div className="divide-y">
-              {rankingData?.moneyRankers &&
-              rankingData.moneyRankers.length > 0 ? (
-                rankingData.moneyRankers.map((playerName, index) => (
-                  <div
-                    key={playerName}
-                    className="grid items-center grid-cols-2 py-6 text-center transition-colors hover:bg-gray-50"
-                  >
-                    <div className="text-2xl font-bold">{index + 1}</div>
-                    <div className="flex items-center justify-center gap-4">
-                      <img
-                        src={`https://api.creepernation.net/avatar/${playerName}`}
-                        alt={playerName}
-                        className="w-[110px] h-[103.96px] flex-shrink-0"
-                      />
-                      <div className="min-w-[120px] max-w-[200px] px-2 text-lg break-words">
-                        {playerName}
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="py-20 text-center text-gray-500">
-                  돈 랭킹 데이터가 없습니다.
+        <div className="divide-y">
+          {rankingData?.moneyRankers && rankingData.moneyRankers.length > 0 ? (
+            rankingData.moneyRankers.map((ranker, index) => (
+              <div
+                key={ranker.playerName}
+                className="grid items-center grid-cols-2 py-4 text-center transition-colors sm:py-6 hover:bg-gray-50"
+              >
+                <div className="text-lg font-bold sm:text-xl md:text-2xl">
+                  {calculateRank(index, rankingData.moneyRankers)}
                 </div>
-              )}
+                <div className="flex flex-col items-center justify-center w-full max-w-md gap-2 mx-auto sm:flex-row sm:gap-4">
+                  <img
+                    src={`https://api.creepernation.net/avatar/${ranker.playerName}`}
+                    alt={ranker.playerName}
+                    className="w-16 h-16 sm:w-[110px] sm:h-[103.96px] flex-shrink-0"
+                  />
+                  <div className="min-w-0 w-full sm:w-[120px] px-2 text-sm sm:text-lg truncate">
+                    {ranker.playerName}
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="py-12 text-center text-gray-500 sm:py-16">
+              돈 랭킹 데이터가 없습니다.
             </div>
+          )}
+        </div>
 
-            {/* 안내 메시지 */}
-            <div className="p-4 mt-4 text-sm text-gray-600 bg-gray-100 rounded-b">
-              * 과도한 경쟁을 방지하기 위해 정확한 보유 금액은 공개하지
-              않습니다.
-            </div>
-          </>
-        )}
+        <div className="p-3 mt-4 text-xs text-gray-600 bg-gray-100 rounded-b sm:p-4 sm:text-sm">
+          * 과도한 경쟁을 방지하기 위해 정확한 보유 금액은 공개하지 않습니다.
+        </div>
       </div>
+      <Modal
+        isOpen={showLoginModal}
+        onClose={() => {
+          setShowLoginModal(false);
+          router.push("/auth");
+        }}
+        message="로그인을 먼저 진행해주세요!"
+      />
     </RankingLayout>
   );
 }

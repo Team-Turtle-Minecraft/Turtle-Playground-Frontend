@@ -1,8 +1,8 @@
-// components/user/Calendar.tsx
 import { useEffect, useMemo } from "react";
+import type { AttendanceStatus } from "@/types/attendance";
 
 interface CalendarProps {
-  attendanceData: { [key: string]: "checked" };
+  attendanceData: { [key: string]: AttendanceStatus };
   onAttendanceCountChange: (count: number, total: number) => void;
 }
 
@@ -11,9 +11,9 @@ const Calendar = ({
   onAttendanceCountChange,
 }: CalendarProps) => {
   const { calendar, totalDays } = useMemo(() => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth();
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
 
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
@@ -47,42 +47,59 @@ const Calendar = ({
     }
 
     return { calendar: weeks, totalDays };
-  }, [attendanceData]);
+  }, []);
 
-  const getDateStatus = (day: number) => {
+  const getDateStatus = (day: number): AttendanceStatus | "" => {
     if (day === 0) return "";
-    const year = new Date().getFullYear();
-    const month = (new Date().getMonth() + 1).toString().padStart(2, "0");
+
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, "0");
     const dayStr = day.toString().padStart(2, "0");
     const dateStr = `${year}-${month}-${dayStr}`;
+
     return attendanceData[dateStr];
   };
 
+  const getDateStyle = (
+    day: number
+  ): { className: string; style?: React.CSSProperties } => {
+    if (day === 0) return { className: "bg-transparent" };
+
+    const status = getDateStatus(day);
+    if (status === "checked") {
+      return {
+        className: "rounded-lg shadow",
+        style: { backgroundColor: "#DEF6DC" },
+      };
+    }
+    if (status === "missed") {
+      return { className: "bg-gray-300 rounded-lg shadow" };
+    }
+    return { className: "bg-white rounded-lg shadow" };
+  };
+
   return (
-    <div className="w-[600px] h-[600px] bg-gray-100 p-6 rounded-lg">
-      <div className="grid grid-cols-7 gap-2 mb-4 text-center">
+    <div className="w-full">
+      <div className="grid grid-cols-7 gap-1 mb-2 text-center md:gap-2 md:mb-4">
         {["일", "월", "화", "수", "목", "금", "토"].map((day) => (
-          <div key={day} className="font-bold">
+          <div key={day} className="text-xs font-bold text-gray-600 md:text-sm">
             {day}
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 gap-1 md:gap-2">
         {calendar.map((week, weekIndex) =>
           week.map((day, dayIndex) => (
             <div
               key={`${weekIndex}-${dayIndex}`}
               className={`aspect-square flex items-center justify-center relative
-                ${day === 0 ? "bg-transparent" : "bg-white rounded-lg shadow"}`}
+                ${getDateStyle(day).className}`}
+              style={getDateStyle(day).style}
             >
               {day !== 0 && (
-                <>
-                  <span>{day}</span>
-                  {getDateStatus(day) === "checked" && (
-                    <span className="absolute text-3xl text-green-500">✓</span>
-                  )}
-                </>
+                <span className="text-xs font-medium md:text-sm">{day}</span>
               )}
             </div>
           ))

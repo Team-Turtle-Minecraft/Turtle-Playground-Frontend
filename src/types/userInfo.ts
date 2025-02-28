@@ -15,6 +15,5 @@ export interface UserInfo {
   farmingLevel: number;
   cookingLevel: number;
   miningLevel: number;
-  gatheringLevel: number;
   fisherLevel: number;
 }

@@ -11,7 +11,7 @@ export const fetchSearchPosts = async ({
   page,
 }: SearchParams): Promise<PostResponse> => {
   try {
-    let accessToken = localStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
       window.location.href = "/auth";
       return Promise.reject("No access token");

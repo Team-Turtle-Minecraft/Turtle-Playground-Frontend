@@ -68,6 +68,18 @@ export default function CombatSystem() {
                 "/assets/combat-02.gif",
                 "/assets/combat-03.gif",
                 "/assets/combat-04.gif",
+                "/assets/combat-05.gif",
+                "/assets/combat-06.gif",
+                "/assets/combat-07.gif",
+              ]}
+              imageDescriptions={[
+                "사진1 - 기본 직업(전사) 스킬",
+                "사진2 - 기본 직업(도적) 스킬",
+                "사진3 - 기본 직업(궁수) 스킬",
+                "사진4 - 기본 직업(마법사) 스킬",
+                "사진5 - 보스 레이드",
+                "사진6 - 보스 클리어 보상1 (무기 룬)",
+                "사진7 - 보스 클리어 보상2 (스킬 룬)",
               ]}
               mainTitle="전직과 보스 레이드로 스펙업까지!"
               leftDescription={[

@@ -61,8 +61,8 @@ export default function BasicInfoContent({ userInfo }: BasicInfoContentProps) {
             ["농부", userInfo.farmingLevel],
             ["요리사", userInfo.cookingLevel],
             ["대장장이", userInfo.smithingLevel],
-            ["채굴", userInfo.miningLevel],
-            ["낚시꾼", userInfo.fisherLevel],
+            ["광부", userInfo.miningLevel],
+            ["어부", userInfo.fisherLevel],
           ].map(([job, level]) => (
             <table
               key={job}

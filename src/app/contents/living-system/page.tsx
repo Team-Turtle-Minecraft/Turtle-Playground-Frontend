@@ -63,9 +63,24 @@ export default function LivingSystem() {
               title="Living System"
               koreanTitle="생활 시스템"
               images={[
-                "/assets/gathering1.gif",
-                "/assets/living-system-2.png",
-                "/assets/living-system-3.png",
+                "/assets/living-01.gif",
+                "/assets/living-02.gif",
+                "/assets/living-03.gif",
+                "/assets/living-04.gif",
+                "/assets/living-05.gif",
+                "/assets/living-06.gif",
+                "/assets/living-07.gif",
+                "/assets/living-08.png",
+              ]}
+              imageDescriptions={[
+                "사진1 - 농부(생활직업) 식물 수확1",
+                "사진2 - 농부(생활직업) 식물 수확2",
+                "사진3 - 요리사(생활직업) 요리하기",
+                "사진4 - 어부(생활직업) 낚시",
+                "사진5 - 대장장이(생활직업) 재료 담기",
+                "사진6 - 대장장이(생활직업) 재료 녹이기",
+                "사진7 - 대장장이(생활직업) 담금질",
+                "사진8 - 상점 예시(농부)",
               ]}
               mainTitle={
                 <>

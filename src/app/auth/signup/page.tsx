@@ -151,7 +151,7 @@ export default function AdditionalInfoPage() {
             <button
               type="button"
               onClick={handleNicknameCheck}
-              className="px-4 py-3 text-white bg-indigo-500 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+              className="px-4 py-3 text-white bg-gray-400 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
             >
               중복확인
             </button>

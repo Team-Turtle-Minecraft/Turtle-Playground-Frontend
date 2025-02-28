@@ -127,7 +127,7 @@ export default function HomePage() {
                 href: "/contents/story-system",
               },
               {
-                src: "/assets/content/achievement.png",
+                src: "/assets/achievement-thumbnail.png",
                 alt: "도전과제 시스템",
                 title: "컨텐츠 소개 - 도전과제",
                 href: "/contents/achievement-system",
@@ -139,7 +139,7 @@ export default function HomePage() {
                 href: "/contents/combat-system",
               },
               {
-                src: "/assets/content/living.png",
+                src: "/assets/living-thumbnail.png",
                 alt: "생활 시스템",
                 title: "컨텐츠 소개 - 생활",
                 href: "/contents/living-system",
@@ -186,7 +186,7 @@ export default function HomePage() {
                 <p className="text-sm font-medium md:text-base">
                   현재 참여 인원:{" "}
                   <span className="font-bold text-blue-600">
-                    {userCount !== null ? `${userCount} / 50` : "로딩 중..."}
+                    {userCount !== null ? `${userCount} / 35` : "로딩 중..."}
                   </span>
                 </p>
               </div>

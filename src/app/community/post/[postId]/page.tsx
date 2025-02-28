@@ -18,6 +18,7 @@ import PostDetailSkeletonLoading from "@/components/skeleton/PostDetailSkeletonL
 
 export default function PostDetailPage() {
   const params = useParams();
+  const postId = params.postId as string;
   const router = useRouter();
   const [post, setPost] = useState<PostDetail | null>(null);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);

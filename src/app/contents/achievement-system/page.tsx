@@ -69,6 +69,12 @@ export default function AchievementSystem() {
                 "/assets/achievement-03.gif",
                 "/assets/achievement-04.gif",
               ]}
+              imageDescriptions={[
+                "사진1 - 프롤로그 중 보라색 블럭과의 상호작용1",
+                "사진2 - 프롤로그 중 보라색 블럭과의 상호작용2",
+                "사진3 - 도전과제 예시",
+                "사진4 - 도전과제 보상",
+              ]}
               mainTitle={
                 <>
                   여기에... 뭔가.. <br />

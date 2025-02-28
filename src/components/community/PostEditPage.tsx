@@ -19,6 +19,10 @@ const Editor = dynamic(
   { ssr: false }
 );
 
+interface PostEditPageProps {
+  postId: string;
+}
+
 interface ImageInfo {
   url: string;
   file: File;
@@ -33,7 +37,7 @@ const categories = [
   { value: "Tip", label: "팁" },
 ];
 
-export default function EditPostPage() {
+export default function EditPostPage({ postId }: PostEditPageProps) {
   const router = useRouter();
   const params = useParams();
   const editorRef = useRef<any>(null);
@@ -131,13 +135,13 @@ export default function EditPostPage() {
         formData.append("imageFile", file);
       });
 
-      await updatePost(Number(params.postId), formData);
+      await updatePost(Number(postId), formData);
 
       imageInfos.forEach((info) => {
         URL.revokeObjectURL(info.url);
       });
 
-      router.push(`/community/post/${params.postId}`);
+      router.push(`/community/post/${postId}`);
     } catch (error) {
       console.error("게시물 수정 실패:", error);
       alert("게시물 수정에 실패했습니다.");
@@ -157,10 +161,10 @@ export default function EditPostPage() {
       }
 
       try {
-        if (!params.postId) return;
+        if (!postId) return;
 
         const [postData, userInfo] = await Promise.all([
-          fetchPostDetail(params.postId as string),
+          fetchPostDetail(postId),
           getUserInfo(),
         ]);
 

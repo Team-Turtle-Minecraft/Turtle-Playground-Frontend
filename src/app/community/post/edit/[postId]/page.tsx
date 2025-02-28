@@ -7,5 +7,5 @@ import { useParams } from "next/navigation";
 export default function Page() {
   const params = useParams();
 
-  return <EditPostPage postId={params.postId as string} />;
+  return <EditPostPage />;
 }

@@ -12,16 +12,12 @@ import { fetchPostDetail } from "@/apis/api/fetchPostDetail";
 import { getUserInfo } from "@/apis/api/getUserInfo";
 import { useRouter, useParams } from "next/navigation";
 import Modal from "@/components/common/Modal";
-import WritePostSkeletonLoading from "../skeleton/PostWriterAndEditSkeletonLoading";
+import WritePostSkeletonLoading from "@/components/skeleton/PostWriterAndEditSkeletonLoading";
 
 const Editor = dynamic(
   () => import("@toast-ui/react-editor").then((mod) => mod.Editor),
   { ssr: false }
 );
-
-interface PostEditPageProps {
-  postId: string;
-}
 
 interface ImageInfo {
   url: string;
@@ -37,9 +33,10 @@ const categories = [
   { value: "Tip", label: "팁" },
 ];
 
-export default function EditPostPage({ postId }: PostEditPageProps) {
+export default function EditPostPage() {
   const router = useRouter();
   const params = useParams();
+  const postId = params.postId as string;
   const editorRef = useRef<any>(null);
 
   const [title, setTitle] = useState("");
@@ -53,6 +50,7 @@ export default function EditPostPage({ postId }: PostEditPageProps) {
     content: string;
     images: ImageInfo[];
   } | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const onUploadImage = useCallback(
     async (blob: Blob | File, callback: (url: string, alt: string) => void) => {
@@ -161,12 +159,20 @@ export default function EditPostPage({ postId }: PostEditPageProps) {
       }
 
       try {
-        if (!postId) return;
+        if (!postId) {
+          setError("게시물 ID가 없습니다");
+          setIsLoading(false);
+          return;
+        }
+
+        console.log("게시물 로딩 시작: ID", postId);
 
         const [postData, userInfo] = await Promise.all([
           fetchPostDetail(postId),
           getUserInfo(),
         ]);
+
+        console.log("게시물 데이터 로드 완료:", postData);
 
         if (userInfo.nickname !== postData.creator) {
           setShowUnauthorizedModal(true);
@@ -183,43 +189,95 @@ export default function EditPostPage({ postId }: PostEditPageProps) {
           postData.postImageApiUrlPrefix
         ) {
           let updatedContent = postData.content;
+
+          // blob URL 패턴을 정규식으로 찾아 대체
+          const blobPattern = /blob:(https?:\/\/[^\/]+)\/([a-z0-9-]+)/g;
+          if (blobPattern.test(updatedContent)) {
+            updatedContent = updatedContent.replace(
+              blobPattern,
+              (match, domain, blobId, offset) => {
+                const imageIndex =
+                  updatedContent.slice(0, offset).match(blobPattern)?.length ||
+                  0;
+
+                if (imageIndex < postData.postImages.length) {
+                  return `${postData.postImageApiUrlPrefix}${postData.postImages[imageIndex]}`;
+                }
+                return match;
+              }
+            );
+          }
+
           const imagePromises = postData.postImages.map(
             async (imagePath, index) => {
-              const imageUrl = `${postData.postImageApiUrlPrefix}${imagePath}`;
-              const response = await fetch(imageUrl);
-              const blob = await response.blob();
-              const file = new File(
-                [blob],
-                `image-${Date.now()}-${index}.${blob.type.split("/")[1]}`,
-                { type: blob.type }
-              );
-              const tempUrl = URL.createObjectURL(blob);
+              try {
+                const imageUrl = `${postData.postImageApiUrlPrefix}${imagePath}`;
+                console.log(`이미지 ${index} URL:`, imageUrl);
 
-              updatedContent = updatedContent.replace(
-                `${postData.postImageApiUrlPrefix}${imagePath}`,
-                tempUrl
-              );
+                const response = await fetch(imageUrl);
+                if (!response.ok) {
+                  throw new Error(
+                    `이미지 로드 실패 (HTTP ${response.status}): ${imageUrl}`
+                  );
+                }
 
-              return {
-                url: tempUrl,
-                file,
-                isDeleted: false,
-              };
+                const blob = await response.blob();
+                const file = new File(
+                  [blob],
+                  `image-${Date.now()}-${index}.${blob.type.split("/")[1]}`,
+                  { type: blob.type }
+                );
+                const tempUrl = URL.createObjectURL(blob);
+
+                // 이미지 URL 패턴 교체
+                updatedContent = updatedContent.replace(
+                  new RegExp(
+                    `${postData.postImageApiUrlPrefix}${imagePath}`.replace(
+                      /[.*+?^${}()|[\]\\]/g,
+                      "\\$&"
+                    ),
+                    "g"
+                  ),
+                  tempUrl
+                );
+
+                return {
+                  url: tempUrl,
+                  file,
+                  isDeleted: false,
+                };
+              } catch (error) {
+                console.error(`이미지 ${index} 로드 실패:`, error);
+                return null;
+              }
             }
           );
 
-          const loadedImages = await Promise.all(imagePromises);
+          const loadedImages = (await Promise.all(imagePromises)).filter(
+            (image): image is ImageInfo => image !== null
+          );
+
+          console.log("로드된 이미지 수:", loadedImages.length);
 
           setPostContent({
             content: updatedContent,
             images: loadedImages,
           });
           setImageInfos(loadedImages);
+        } else {
+          console.warn("게시물 데이터 누락:", {
+            hasContent: !!postData.content,
+            hasImages: !!postData.postImages,
+            hasPrefix: !!postData.postImageApiUrlPrefix,
+          });
+          setPostContent({
+            content: postData.content || "",
+            images: [],
+          });
         }
       } catch (error) {
         console.error("게시물 로드 실패:", error);
-        alert("게시물을 불러오는데 실패했습니다.");
-        router.back();
+        setError("게시물을 불러오는데 실패했습니다");
       } finally {
         setIsLoading(false);
       }
@@ -232,7 +290,7 @@ export default function EditPostPage({ postId }: PostEditPageProps) {
         URL.revokeObjectURL(info.url);
       });
     };
-  }, [params.postId]);
+  }, [postId]);
 
   useEffect(() => {
     const editor = editorRef.current?.getInstance();
@@ -245,12 +303,12 @@ export default function EditPostPage({ postId }: PostEditPageProps) {
           Array.from(tempDiv.getElementsByTagName("img")).map((img) => img.src)
         );
 
-        imageInfos.forEach((info) => {
-          if (!currentImageUrls.has(info.url) && !info.isDeleted) {
-            URL.revokeObjectURL(info.url);
-            info.isDeleted = true;
-          }
-        });
+        setImageInfos((prev) =>
+          prev.map((info) => ({
+            ...info,
+            isDeleted: !currentImageUrls.has(info.url) ? true : info.isDeleted,
+          }))
+        );
       });
     }
 
@@ -259,10 +317,31 @@ export default function EditPostPage({ postId }: PostEditPageProps) {
         URL.revokeObjectURL(info.url);
       });
     };
-  }, [imageInfos]);
+  }, [imageInfos.length]);
 
   if (isLoading) {
     return <WritePostSkeletonLoading />;
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col min-h-screen bg-white">
+        <Header />
+        <div className="flex items-center justify-center flex-grow">
+          <div className="p-6 text-center">
+            <div className="mb-4 text-red-500">⚠️ 오류</div>
+            <div className="text-gray-700">{error}</div>
+            <button
+              onClick={() => router.push("/community")}
+              className="px-4 py-2 mt-4 text-gray-600 transition-colors border rounded hover:bg-gray-100"
+            >
+              목록으로 돌아가기
+            </button>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
   }
 
   return (

@@ -170,7 +170,7 @@ export default function CommunityContent() {
       <div className="relative w-full">
         <div className="flex justify-center h-48 sm:h-64 md:h-80 lg:h-[310px] bg-gray-200 overflow-hidden">
           <img
-            src="/assets/turtle-playground-community-banner.png"
+            src={`${process.env.ASSET_PREFIX}/front/assets/turtle-playground-community-banner.png`}
             alt="커뮤니티 배너"
             className="object-contain w-full h-full"
           />

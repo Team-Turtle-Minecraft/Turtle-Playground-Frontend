@@ -12,6 +12,14 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        sans: [
+          "NanumSquareRound",
+          "var(--font-nanum-square-round)",
+          "system-ui",
+          "sans-serif",
+        ],
+      },
     },
   },
   plugins: [],

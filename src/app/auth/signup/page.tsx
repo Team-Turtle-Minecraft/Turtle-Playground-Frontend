@@ -145,7 +145,7 @@ export default function AdditionalInfoPage() {
               }}
               required
               minLength={2}
-              maxLength={10}
+              maxLength={20}
               className="flex-1 px-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             <button

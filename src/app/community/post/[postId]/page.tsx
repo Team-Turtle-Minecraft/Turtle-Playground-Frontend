@@ -70,9 +70,13 @@ export default function PostDetailPage() {
           },
         });
 
-        setTimeout(() => {
+        // 더 긴 시간 설정 (2000ms -> 3000ms)
+        const timer = setTimeout(() => {
           setLikeModalConfig((prev) => ({ ...prev, isOpen: false }));
-        }, 2000);
+        }, 3000);
+
+        // 컴포넌트가 언마운트되거나 다시 좋아요를 누를 경우를 대비해 타이머 정리
+        return () => clearTimeout(timer);
       } catch (error) {
         setIsLiked(currentIsLiked);
         setLikeCount((prevCount) =>

@@ -127,12 +127,6 @@ export default function HomePage() {
                 href: "/contents/story-system",
               },
               {
-                src: `${process.env.ASSET_PREFIX}/front/assets/achievement-thumbnail.png`,
-                alt: "도전과제 시스템",
-                title: "컨텐츠 소개 - 도전과제",
-                href: "/contents/achievement-system",
-              },
-              {
                 src: `${process.env.ASSET_PREFIX}/front/assets/combat-thumbnail.png`,
                 alt: "전투 시스템",
                 title: "컨텐츠 소개 - 전투",
@@ -143,6 +137,12 @@ export default function HomePage() {
                 alt: "생활 시스템",
                 title: "컨텐츠 소개 - 생활",
                 href: "/contents/living-system",
+              },
+              {
+                src: `${process.env.ASSET_PREFIX}/front/assets/achievement-thumbnail.png`,
+                alt: "도전과제 시스템",
+                title: "컨텐츠 소개 - 도전과제",
+                href: "/contents/achievement-system",
               },
             ].map((item, index) => (
               <div
